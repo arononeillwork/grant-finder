@@ -185,7 +185,7 @@ See `docs/grants-audit.md`. Summary:
 
 ## 12. Open work (priority order)
 
-1. **Deploy to the new Supabase project + Vercel from this repo** (the old deployments are listed in §13).
+1. ~~Deploy to the new Supabase project + Vercel from this repo~~ Done 28 Sep 2026 (see §15). Still needed: the Edge Function secrets.
 2. **Verify email delivery from Edge Functions.** SMTP on port 465 from Supabase Edge is **untested**. If blocked, switch `sendMail` to an HTTP email API (e.g. Resend) behind the same interface.
 3. **Verify APIEmpresas response field names** with a real key and adjust `normalise()` in `company-lookup`.
 4. **Verify the BDNS API query** in `email-jobs` (`bdnsNew`); the parameter names are unconfirmed and it currently degrades gracefully.
@@ -198,7 +198,7 @@ See `docs/grants-audit.md`. Summary:
 
 ## 13. Legacy deployments (retire after migrating)
 
-- **Vercel:** project `solicita` on the arononeillwork Hobby account; URL `https://solicita-arononeillworks-projects.vercel.app`. Its config points at the old Supabase project.
+- **Vercel:** project `solicita` on the arononeillwork Hobby account; URL `https://solicita-arononeillworks-projects.vercel.app`. Its manual uploads from 23–24 Sep pointed at the old Supabase project. It now deploys from GitHub (§15).
 - **Supabase (old):** project ref `rapzydlruzcrdnussvrf` in an org named **"Shopa"** whose login the owner can't identify. Its cron jobs are unscheduled and it holds no client data (0 cases). Delete it if the login is ever found.
 - **Stripe:** "Easy Beans Coffee" account, live mode. Build and test in **test mode** first.
 
@@ -215,7 +215,10 @@ select admin.charge_now('SOL-XXXX','grant-id');                -- charge on the 
 
 ## 15. Deployment status (28 Sep 2026)
 
-- **GitHub:** `arononeillwork/grant-finder`. `main` is the production branch. The repo's default branch is still `claude/fervent-noether-xtd4kl` until the owner switches it to `main` in GitHub settings.
-- **Vercel:** project `solicita` (https://solicita-arononeillworks-projects.vercel.app, https://solicita-two.vercel.app), Root Directory set to `site`. Production is still the manual upload from 24 Sep (older code, old backend) until the first Git deployment. Git connection: done by the owner in the dashboard (Settings → Git → Connect Git Repository), since no API tool can link an existing project.
-- **Automatic Git deployments are paused** by `"git": { "deploymentEnabled": false }` in `site/vercel.json`, because `site/config.js` still has placeholder values and a deploy would replace the live site with one that can't load grants. The go-live commit must fill in `site/config.js` **and** remove that line.
-- **Supabase:** new project **"Solicita Grant Finder"** in arononeill's org (eu-west-3), not created yet (the connector's `create_project` timed out, so create it in the dashboard). Then apply migrations 0001–0005, deploy the functions and set the secrets (§9).
+- **Live:** https://solicita-arononeillworks-projects.vercel.app (also https://solicita-two.vercel.app), deployed by Vercel from `main` of `arononeillwork/grant-finder` (Vercel project `solicita`, Root Directory `site`). Every push to `main` goes live; other branches get preview deployments behind Vercel login. GitHub's default branch is `main`.
+- **Supabase:** project **"Grant Finder"**, ref `hjmfbknjeewgckllgbnp`, arononeill's org (Pro plan), eu-west-1. `site/config.js` points at it with the legacy anon JWT key.
+  - Migrations 0001–0005 are applied (loaded from GitHub and checked against each file's md5). `supabase_migrations.schema_migrations` uses the repo file versions, so after `supabase link` the CLI sees them as applied.
+  - All 7 functions are deployed with the `verify_jwt` settings from `config.toml`. They match the repo byte for byte, except line 8 of `company-lookup/index.ts`: its accent regex was uploaded with literal characters instead of `\u` escapes (same behaviour). The next `supabase functions deploy` restores the exact file.
+  - Vault secrets `project_url` and `anon_key` are set. Cron jobs `process-fees` and `email-jobs` (every 10 min) and `close-expired-grants` (daily) are scheduled.
+  - **Edge Function secrets are not set yet.** The owner adds them in the dashboard (Edge Functions → Secrets): `SITE_URL` (the live URL), `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `OWNER_EMAIL`, `APIEMPRESAS_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`. Until then no emails, company lookups or payments, and new requests are only visible in `admin.case_overview`.
+- The live site no longer uses the old Supabase project (§13).

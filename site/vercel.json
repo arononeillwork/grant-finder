@@ -1,6 +1,5 @@
 {
   "cleanUrls": false,
-  "git": { "deploymentEnabled": false },
   "headers": [
     { "source": "/(.*)", "headers": [
       { "key": "X-Content-Type-Options", "value": "nosniff" },
