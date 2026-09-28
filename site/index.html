@@ -32,42 +32,112 @@ h1{font-family:var(--display);font-weight:800;font-size:clamp(2.1rem,6vw,3.3rem)
 h2{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,4vw,1.95rem);letter-spacing:-.02em;line-height:1.1;margin:0 0 .5rem}
 h3{font-family:var(--display);font-weight:600;font-size:1.2rem;line-height:1.25;margin:0}
 h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:1.3rem 0 .45rem}
-.lede{color:var(--muted);max-width:60ch;margin:0 0 1.75rem}
-.progress{display:flex;gap:.3rem;margin-bottom:.5rem}
-.progress i{flex:1;height:4px;border-radius:2px;background:var(--line)}
-.progress i.on{background:var(--blue)}
-.stepcount{font-size:.88rem;color:var(--muted);margin-bottom:1.6rem}
-.nif{display:flex;gap:.6rem;flex-wrap:wrap}
-.nif input{flex:1 1 260px;min-width:0;font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,5vw,2rem);letter-spacing:.09em;text-transform:uppercase;padding:.65rem 1rem;border:2px solid var(--ink);border-radius:10px;background:var(--surface);color:var(--ink)}
-.nif input::placeholder{color:var(--line-strong)}
+.lede{color:var(--muted);max-width:60ch;margin:0 0 1.75rem;text-wrap:pretty}
+h1,h2{text-wrap:balance}
+
 input:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible,label.upbtn:focus-within{outline:3px solid var(--blue);outline-offset:2px}
 button{font:inherit;cursor:pointer}
-.primary{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:.8rem 1.3rem;font-weight:700}
+.primary{background:var(--blue);color:#fff;border:0;border-radius:12px;padding:.85rem 1.4rem;font-weight:700;box-shadow:0 8px 18px -10px rgb(36 87 197 / .7);transition:background .2s,box-shadow .2s}
 .primary:hover{background:var(--blue-ink)}
-.primary:disabled{opacity:.45;cursor:not-allowed}
-.ghost{background:var(--surface);border:1px solid var(--line-strong);color:var(--ink);border-radius:10px;padding:.8rem 1.2rem}
+.primary:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.ghost{background:var(--surface);border:1.5px solid var(--line);color:var(--ink);border-radius:12px;padding:.8rem 1.2rem;transition:border-color .2s}
+.ghost:hover{border-color:var(--line-strong)}
 .small{padding:.45rem .8rem;font-size:.9rem;border-radius:8px}
 .linkbtn{background:none;border:0;padding:0;color:var(--blue);text-decoration:underline;text-underline-offset:3px}
 .msg{margin:.7rem 0 0;font-size:.95rem;min-height:1.4em}
 .msg.err{color:var(--no)}
-.note{background:var(--blue-soft);border-radius:10px;padding:.85rem 1rem;font-size:.94rem;margin:1.2rem 0}
+.note{background:var(--blue-soft);border-radius:14px;padding:.85rem 1rem;font-size:.94rem;margin:1.2rem 0}
 .note.warn{background:var(--warn-soft)}
-.company{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:10px;padding:1rem 1.1rem;margin:1.2rem 0}
+.company{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:14px;padding:1rem 1.1rem;margin:1.2rem 0}
 .company dl{display:grid;grid-template-columns:max-content 1fr;gap:.25rem 1rem;margin:.6rem 0 0;font-size:.94rem}
 .company dt{color:var(--muted)}.company dd{margin:0}
 .src{font-size:.8rem;color:var(--ok);font-weight:700;margin-left:.35rem}
-.field{margin:1.6rem 0}
-.q{display:block;font-weight:700;margin-bottom:.1rem}
-.hint{color:var(--muted);font-size:.9rem;margin:0 0 .55rem}
-input[type=text],input[type=number],input[type=email],input[type=tel],select{font:inherit;padding:.6rem .75rem;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink);width:100%;max-width:420px}
-.row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.55rem}.row select{width:auto}
-.seg{display:flex;flex-wrap:wrap;gap:.4rem}
-.seg label{position:relative}
+/* form shell
+   Layout: a clickable stepper and back link above each step; questions sit in soft panels;
+   choices are tile buttons with a tick. Same palette as before. */
+:root{--focus:0 0 0 4px color-mix(in oklab,var(--blue) 18%,transparent);--r-field:12px;--r-panel:20px}
+.stepper{margin:0 0 1rem}
+.stepper ol{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.45rem}
+.crumb{width:100%;display:flex;flex-direction:column;gap:.55rem;padding:0;background:none;border:0;text-align:left;color:var(--muted);font-size:.84rem;font-weight:700;border-radius:8px}
+.crumb .bar{display:block;height:5px;border-radius:999px;background:var(--line);overflow:hidden}
+.crumb .bar::after{content:'';display:block;height:100%;width:0;background:linear-gradient(90deg,var(--blue),#4C7FE6);border-radius:inherit;transition:width .5s var(--ease-out,ease)}
+.crumb .lbl{display:flex;align-items:center;gap:.45rem;min-width:0}
+.crumb .txt{line-height:1.2}
+.crumb .num{flex:none;display:inline-grid;place-items:center;width:1.45rem;height:1.45rem;border-radius:50%;background:var(--surface);border:1.5px solid var(--line-strong);font-size:.74rem;font-variant-numeric:tabular-nums}
+.crumb.done,.crumb.current{color:var(--ink)}
+.crumb.done .bar::after,.crumb.current .bar::after{width:100%}
+.crumb.done .num{background:var(--blue);border-color:var(--blue);color:#fff}
+.crumb.current .num{border-color:var(--blue);color:var(--blue);box-shadow:var(--focus)}
+button.crumb:hover{color:var(--blue)}
+button.crumb:hover .num{background:var(--blue-ink);border-color:var(--blue-ink)}
+.stepnav{display:flex;align-items:center;gap:.75rem;min-height:2.2rem;margin:0 0 1.5rem}
+.back{display:inline-flex;align-items:center;gap:.35rem;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:.35rem .85rem .35rem .65rem;font-size:.9rem;font-weight:700;color:var(--ink);transition:border-color .2s,box-shadow .2s,color .2s}
+.back:hover{border-color:var(--line-strong);color:var(--blue);box-shadow:0 2px 8px -4px rgb(23 34 46 / .25)}
+.back svg{width:1rem;height:1rem;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.stepnow{font-size:.88rem;color:var(--muted)}
+.stepnow b{color:var(--ink)}
+@media (min-width:640px){.stepnow{display:none}}
+@media (max-width:639px){.crumb .txt{display:none}.crumb .lbl{justify-content:flex-start}}
+
+/* step 1 */
+.hero{margin-bottom:1.75rem}
+.nif{display:flex;gap:.5rem;padding:.45rem;border:2px solid var(--ink);border-radius:18px;background:var(--surface);box-shadow:0 12px 32px -18px rgb(23 34 46 / .35);transition:border-color .2s,box-shadow .2s}
+.nif:focus-within{border-color:var(--blue);box-shadow:var(--focus),0 12px 32px -18px rgb(36 87 197 / .45)}
+.nif input{flex:1 1 auto;min-width:0;font-family:var(--display);font-weight:800;font-size:clamp(1.4rem,5vw,1.9rem);letter-spacing:.09em;text-transform:uppercase;padding:.35rem .7rem;border:0;background:none;color:var(--ink)}
+.nif input:focus-visible{outline:none}
+.nif input::placeholder{color:var(--line-strong)}
+.nif .primary{flex:none;border-radius:12px}
+@media (max-width:520px){.nif{flex-direction:column}.nif .primary{width:100%}}
+.trust{list-style:none;display:flex;flex-wrap:wrap;gap:.4rem 1.1rem;margin:.9rem 0 0;padding:0;color:var(--muted);font-size:.9rem}
+.trust li{display:flex;align-items:center;gap:.4rem}
+.trust li::before{content:'✓';display:inline-grid;place-items:center;width:1.1rem;height:1.1rem;border-radius:50%;background:var(--ok-soft);color:var(--ok);font-size:.65rem;font-weight:700}
+.explore{margin-top:2.25rem;padding:1.35rem;border-radius:var(--r-panel);background:linear-gradient(160deg,var(--blue-soft),var(--surface) 70%);border:1px solid color-mix(in oklab,var(--blue) 14%,var(--line))}
+.explore h2{font-size:1.35rem;margin-bottom:.25rem}
+.explore>p{color:var(--muted);margin:0 0 1rem;max-width:58ch}
+.plans{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,13.5rem),1fr));gap:.6rem}
+.plan{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.2rem .75rem;align-items:start;text-align:left;padding:.9rem 1rem;border-radius:16px;border:1px solid var(--line);background:var(--surface);color:var(--ink);transition:border-color .2s,box-shadow .2s,translate .2s}
+.plan:hover{border-color:var(--blue);box-shadow:0 10px 24px -16px rgb(36 87 197 / .55);translate:0 -2px}
+.plan .pi{grid-row:span 2;display:grid;place-items:center;width:2.4rem;height:2.4rem;border-radius:12px;background:var(--blue-soft);color:var(--blue)}
+.plan .pi svg{width:1.25rem;height:1.25rem;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.plan b{font-size:.98rem;line-height:1.3}
+.plan small{color:var(--muted);font-size:.86rem;line-height:1.35}
+.explore>.demo{margin:1.2rem 0 0;font-size:.93rem;color:var(--muted)}
+
+/* panels and fields */
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-panel);padding:.3rem 1.35rem;margin:1.2rem 0;box-shadow:0 1px 2px rgb(23 34 46 / .04)}
+.panel>.field+.field{border-top:1px solid var(--line)}
+.panel-title{margin:1.1rem 0 -.2rem;font-size:.75rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+.field{padding:1.15rem 0;margin:0}
+.fields-2{display:grid;grid-template-columns:minmax(0,1fr);border-top:1px solid var(--line)}
+@media (min-width:640px){.fields-2{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 1.5rem}}
+.panel>.fields-2:first-child{border-top:0}
+.q{display:block;font-weight:700;margin-bottom:.15rem;text-wrap:pretty}
+.opt{font-weight:400;color:var(--muted);font-size:.88rem;margin-left:.25rem}
+.hint{color:var(--muted);font-size:.9rem;margin:0 0 .6rem;text-wrap:pretty}
+.q+.seg,.q+.row{margin-top:.6rem}
+input[type=text],input[type=number],input[type=email],input[type=tel],select{font:inherit;padding:.7rem .85rem;border:1.5px solid var(--line-strong);border-radius:var(--r-field);background:var(--surface);color:var(--ink);width:100%;max-width:420px;transition:border-color .2s,box-shadow .2s}
+input[type=text]:hover,input[type=number]:hover,input[type=email]:hover,input[type=tel]:hover,select:hover{border-color:color-mix(in oklab,var(--blue) 35%,var(--line-strong))}
+input[type=text]:focus,input[type=number]:focus,input[type=email]:focus,input[type=tel]:focus,select:focus{border-color:var(--blue);box-shadow:var(--focus);outline:none}
+select{appearance:none;-webkit-appearance:none;padding-right:2.3rem;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);background-position:calc(100% - 1.15rem) 55%,calc(100% - .8rem) 55%;background-size:.35rem .35rem;background-repeat:no-repeat}
+.row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.6rem}.row select{width:auto;min-width:8.5rem}
+.seg{display:flex;flex-wrap:wrap;gap:.45rem}
+.seg label{position:relative;display:flex}
 .seg input{position:absolute;opacity:0;width:1px;height:1px}
-.seg span{display:inline-block;padding:.45rem .9rem;border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);font-size:.95rem;cursor:pointer}
-.seg input:checked+span{background:var(--blue);border-color:var(--blue);color:#fff}
-.seg input:focus-visible+span{outline:3px solid var(--blue);outline-offset:2px}
-.actions{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-top:2.2rem}
+.seg span{display:inline-flex;align-items:center;gap:.45rem;padding:.55rem .95rem;border:1.5px solid var(--line);border-radius:12px;background:var(--surface);font-size:.95rem;cursor:pointer;transition:border-color .15s,background .15s,color .15s,box-shadow .15s}
+.seg span::before{content:'';flex:none;width:1rem;height:1rem;border-radius:50%;border:1.5px solid var(--line-strong);background:var(--surface);transition:all .15s}
+.seg label:hover span{border-color:color-mix(in oklab,var(--blue) 45%,var(--line))}
+.seg input:checked+span{background:var(--blue-soft);border-color:var(--blue);color:var(--blue-ink);font-weight:700;box-shadow:0 4px 12px -8px rgb(36 87 197 / .6)}
+.seg input:checked+span::before{border-color:var(--blue);background:var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.3 6.7 11 12 5.5' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
+.seg input:focus-visible+span{outline:none;box-shadow:var(--focus)}
+.qcard{position:relative;padding-left:2.6rem}
+.qcard .qn{position:absolute;left:0;top:1.2rem;display:grid;place-items:center;width:1.75rem;height:1.75rem;border-radius:50%;background:var(--bg);border:1.5px solid var(--line-strong);color:var(--muted);font-size:.78rem;font-weight:700;font-variant-numeric:tabular-nums;transition:all .2s}
+.qcard.answered .qn{background:var(--ok);border-color:var(--ok);color:#fff}
+.actions{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-top:2rem}
+.primary .arr{display:inline-block;margin-left:.4rem;transition:translate .2s}
+.primary:hover .arr{translate:.2rem 0}
+@keyframes stepIn{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
+#app.enter>*{animation:stepIn .35s cubic-bezier(.2,.8,.2,1) both}
+@media (prefers-reduced-motion:reduce){#app.enter>*{animation:none}.crumb .bar::after{transition:none}}
 /* results (step 4)
    Layout: a summary panel that accounts for every grant checked, then one column of grant cards
    grouped by status, with a sticky apply bar. Progressive: container queries, :has(), oklch/color-mix,
@@ -257,16 +327,19 @@ ol.steps li:not(:last-child)::after{content:'';position:absolute;left:.72rem;top
 /* apply */
 .recap{margin:.6rem 0 0;padding-left:1.2rem}
 .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.9rem;margin-top:1.4rem}
-.tier{text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:1.1rem 1.15rem;color:var(--ink)}
-.tier.on{border-color:var(--blue);background:var(--blue-soft)}
-.tier b{display:block;font-family:var(--display);font-size:1.15rem;margin-bottom:.15rem}
+.tier{position:relative;text-align:left;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:1.15rem 3rem 1.15rem 1.2rem;color:var(--ink);transition:border-color .2s,box-shadow .2s,translate .2s}
+.tier:hover{border-color:color-mix(in oklab,var(--blue) 45%,var(--line));translate:0 -2px;box-shadow:0 10px 24px -16px rgb(36 87 197 / .5)}
+.tier::after{content:'';position:absolute;top:1.1rem;right:1.1rem;width:1.3rem;height:1.3rem;border-radius:50%;border:1.5px solid var(--line-strong);background:var(--surface)}
+.tier.on{border-color:var(--blue);background:linear-gradient(160deg,var(--blue-soft),var(--surface));box-shadow:var(--focus)}
+.tier.on::after{border-color:var(--blue);background:var(--blue) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.3 6.7 11 12 5.5' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/100% no-repeat}
+.tier b{display:block;font-family:var(--display);font-size:1.2rem;margin-bottom:.15rem}
 .tier .price{display:block;font-weight:700;color:var(--blue);margin-bottom:.5rem}
 .tier span.d{display:block;color:var(--muted);font-size:.92rem}
 .docsec{margin-top:2rem}
 .docsec>h3{margin-bottom:.2rem}.docsec>p{color:var(--muted);font-size:.93rem;margin:0 0 .8rem}
 .docprogress{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:.4rem 0 .3rem}
 .docprogress i{display:block;height:100%;background:var(--ok);border-radius:4px}
-.doc{display:grid;grid-template-columns:1.6rem 1fr;gap:.6rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem;margin-bottom:.6rem}
+.doc{display:grid;grid-template-columns:1.6rem minmax(0,1fr);gap:.6rem;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:.9rem 1rem;margin-bottom:.6rem}
 .doc.done{border-color:#B7DCC6;background:#FBFEFC}
 .doc .state{display:inline-grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid var(--line-strong);font-size:.8rem;font-weight:700;color:#fff;margin-top:.1rem}
 .doc.done .state{background:var(--ok);border-color:var(--ok)}
@@ -287,7 +360,7 @@ label.upbtn input{position:absolute;opacity:0;width:1px;height:1px}
 .prep{display:flex;gap:.45rem;align-items:center;font-size:.9rem;margin-top:.5rem}
 .prep input,.have input{accent-color:var(--blue)}
 .have{display:flex;gap:.45rem;align-items:center;font-size:.9rem;margin-top:.6rem}
-.grantsteps{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.7rem}
+.grantsteps{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:1rem 1.1rem;margin-bottom:.7rem}
 ol.steps{padding-left:1.3rem;margin:.4rem 0}ol.steps li{margin:.3rem 0}
 .check{display:flex;gap:.55rem;align-items:flex-start;margin:.7rem 0;font-size:.95rem}
 .check input{margin-top:.3rem;accent-color:var(--blue)}
@@ -472,8 +545,8 @@ const RULES = {
 
 /* ---------- State ---------- */
 let GRANTS = [], DOCS = {}, GDOCS = [];
-const blank = () => ({name:'',entity:null,province:null,town:'unsure',sector:null,employees:'',startY:'',startM:'',debts:'unsure',alta:'unsure',altaY:'',altaM:'',tarifaPlana:'unsure',empadronado:'unsure',age:'',gender:'na',education:'unsure',turnover:'unsure',hiring:'unsure',candidate:'unsure',unemployed:'unsure',replaceEquip:'unsure',rta:'unsure',energyProject:'unsure',kitBefore:'unsure'});
-const S = {step:1, nif:'', lookup:null, company:null, auto:{}, demo:false, p:blank(), selected:new Set(), filter:'all', tier:null, contact:{name:'',email:'',phone:''}, agree:{data:false,fee:false}, docFiles:{}, prepare:{}, have:{}, sent:null, busy:false, err:'', animate:false};
+const blank = () => ({trading:'yes',name:'',entity:null,province:null,town:'unsure',sector:null,employees:'',startY:'',startM:'',debts:'unsure',alta:'unsure',altaY:'',altaM:'',tarifaPlana:'unsure',empadronado:'unsure',age:'',gender:'na',education:'unsure',turnover:'unsure',hiring:'unsure',candidate:'unsure',unemployed:'unsure',replaceEquip:'unsure',rta:'unsure',energyProject:'unsure',kitBefore:'unsure'});
+const S = {step:1, maxStep:1, nif:'', lookup:null, company:null, auto:{}, demo:false, explore:null, p:blank(), selected:new Set(), filter:'all', tier:null, contact:{name:'',email:'',phone:'',nif:''}, agree:{data:false,fee:false}, docFiles:{}, prepare:{}, have:{}, sent:null, busy:false, err:'', animate:false};
 const STEPS = ['Business number','Details','Questions','Your grants','Apply'];
 const app = document.getElementById('app');
 
@@ -656,20 +729,43 @@ function questionRelevant(q){
 const seg = (key, opts) => `<div class="seg" role="radiogroup">${opts.map(([v,l])=>`<label><input type="radio" name="${key}" data-k="${key}" value="${v}" ${String(S.p[key])===String(v)?'checked':''}><span>${l}</span></label>`).join('')}</div>`;
 const years = (sel, from) => { let o='<option value="">Year</option>'; for(let y=TODAY.getFullYear();y>=from;y--) o+=`<option ${String(sel)===String(y)?'selected':''}>${y}</option>`; return o; };
 const months = sel => '<option value="">Month</option>' + MONTHS.map((m,i)=>`<option value="${i+1}" ${String(sel)===String(i+1)?'selected':''}>${m}</option>`).join('');
-const progress = () => `<div class="progress" aria-hidden="true">${STEPS.map((_,i)=>`<i class="${i<S.step?'on':''}"></i>`).join('')}</div><div class="stepcount">Step ${S.step} of 5: ${STEPS[S.step-1]}</div>`;
+const BACK_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
+const progress = () => {
+  const locked = !!S.sent;
+  const crumbs = STEPS.map((l,i)=>{ const n=i+1, st=n<S.step?'done':n===S.step?'current':'todo';
+    const inner=`<span class="bar"></span><span class="lbl"><span class="num">${st==='done'?'✓':n}</span><span class="txt">${l}</span></span>`;
+    return `<li>${n!==S.step && n<=S.maxStep && !locked ? `<button class="crumb ${st}" data-go="${n}" aria-label="Go to step ${n}: ${l}">${inner}</button>` : `<span class="crumb ${st}" ${st==='current'?'aria-current="step"':''}>${inner}</span>`}</li>`; }).join('');
+  return `<nav class="stepper" aria-label="Progress"><ol>${crumbs}</ol></nav>
+  <div class="stepnav">${S.step>1&&!locked?`<button class="back" data-go="${S.step-1}">${BACK_ICON}Back</button>`:''}<span class="stepnow">Step ${S.step} of 5: <b>${STEPS[S.step-1]}</b></span></div>`;
+};
 const auto = k => S.auto[k] ? '<span class="src">From the Registro Mercantil</span>' : '';
 
 /* ---------- Views: start, details, questions ---------- */
+const PLAN_ICON = {
+  autonomo:'<circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.8 3.6-6 7-6s6.2 2.2 7 6"/>',
+  sl:'<path d="M4 20V8l8-4 8 4v12"/><path d="M9 20v-6h6v6M4 20h16"/>',
+  existing:'<path d="M4 10v10h16V10"/><path d="M3 5.5 4.5 3h15L21 5.5V8a2.5 2.5 0 0 1-4.5 1.5A2.5 2.5 0 0 1 12 9.5a2.5 2.5 0 0 1-4.5 0A2.5 2.5 0 0 1 3 8z"/>'
+};
+const PLANS = [
+  ['autonomo','I’m about to become an autónomo','Not registered with Hacienda or Social Security yet'],
+  ['sl','I’m setting up a company (SL)','No CIF yet, or still being registered'],
+  ['existing','I already have a business','I just don’t have the number to hand']
+];
 function vStart(){
-  return `${progress()}<h1>Find the grants your business can get.</h1>
+  return `${progress()}<div class="hero"><h1>Find the grants your business can get.</h1>
   <p class="lede">Enter your NIF, NIE or CIF. We match you against grants in Andalucía and tell you exactly which documents to upload, with templates for the forms.</p>
   <label class="sr" for="nif">NIF, NIE or CIF</label>
-  <div class="nif"><input id="nif" autocomplete="off" spellcheck="false" maxlength="12" placeholder="B12345678" value="${esc(S.nif)}"><button class="primary" data-act="nif" ${S.busy?'disabled':''}>${S.busy?'Checking…':'Check my business'}</button></div>
-  <p class="msg err" id="nifmsg">${esc(S.err)}</p>
-  <p>No number handy? <button class="linkbtn" data-act="demo">Try it with Easy Beans Coffee</button></p>`;
+  <div class="nif"><input id="nif" autocomplete="off" spellcheck="false" maxlength="12" placeholder="B12345678" value="${esc(S.nif)}"><button class="primary" data-act="nif" ${S.busy?'disabled':''}>${S.busy?'Checking…':'Check my business<span class="arr" aria-hidden="true">→</span>'}</button></div>
+  <p class="msg err" id="nifmsg" role="alert">${esc(S.err)}</p>
+  <ul class="trust"><li>Free to check</li><li>No account needed</li><li>Only grants verified against official sources</li></ul></div>
+  <section class="explore" aria-labelledby="explore-h"><h2 id="explore-h">No NIF yet? See what you could get.</h2>
+  <p>Tell us where you are and we’ll check the same grants against your plans. You can add your number later, when you apply.</p>
+  <div class="plans">${PLANS.map(([k,t,s])=>`<button class="plan" data-act="explore" data-plan="${k}"><span class="pi" aria-hidden="true"><svg viewBox="0 0 24 24">${PLAN_ICON[k]}</svg></span><b>${t}</b><small>${s}</small></button>`).join('')}</div>
+  <p class="demo">Just looking? <button class="linkbtn" data-act="demo">Try it with Easy Beans Coffee</button></p></section>`;
 }
 function lookupNote(){
-  const L=S.lookup; if (S.demo) return `<div class="note">Demo profile for Easy Beans Coffee (SL, San Pedro de Alcántara). Unknown answers are left as “Not sure”.</div>`;
+  const L=S.lookup; if (S.explore) return `<div class="note">${S.explore==='existing'?'No number needed to look. Fill in the details below and we’ll check every grant.':'Checking grants for a business you’re about to start. We’ve marked it as not trading yet, so grants that need trading history show when you’d qualify.'} You can add your NIF when you apply.</div>`;
+  if (S.demo) return `<div class="note">Demo profile for Easy Beans Coffee (SL, San Pedro de Alcántara). Unknown answers are left as “Not sure”.</div>`;
   if (!L) return '';
   if (L.lookup==='found' && S.company){
     const c=S.company, inactive = c.status && !/activ/i.test(c.status);
@@ -687,24 +783,29 @@ function lookupNote(){
   return `<div class="note">${msgs[L.lookup]||''}</div>`;
 }
 function vDetails(){
-  const p=S.p;
-  return `${progress()}<h2>Confirm your business details</h2>${lookupNote()}
-  <div class="field"><label class="q" for="name">Business name ${auto('name')}</label><input type="text" id="name" data-k="name" value="${esc(p.name)}"></div>
+  const p=S.p, planned=p.trading==='notyet';
+  return `${progress()}<h2>${S.explore&&S.explore!=='existing'?'Tell us about your plans':'Confirm your business details'}</h2>${lookupNote()}
+  <div class="panel"><div class="fields-2">
+    <div class="field"><label class="q" for="name">Business name ${S.explore&&S.explore!=='existing'?'<span class="opt">optional</span>':''} ${auto('name')}</label><input type="text" id="name" data-k="name" value="${esc(p.name)}"></div>
+    <div class="field"><label class="q" for="employees">Number of employees</label><p class="hint">Not counting owners. Part-time staff count as one each.</p><input type="number" id="employees" data-k="employees" min="0" max="999" value="${esc(p.employees)}" style="max-width:8rem"></div></div>
   <div class="field"><span class="q">Business type ${auto('entity')}</span>${seg('entity',[['autonomo','Autónomo'],['sl','SL (limited company)'],['other','Other company']])}</div>
-  <div class="field"><span class="q">What kind of business? ${auto('sector')}</span>${seg('sector',[['hospitality','Bar, café, restaurant or hotel'],['retail','Shop'],['services','Services'],['industry','Industry or manufacturing'],['other','Other']])}</div>
+  <div class="field"><span class="q">What kind of business? ${auto('sector')}</span>${seg('sector',[['hospitality','Bar, café, restaurant or hotel'],['retail','Shop'],['services','Services'],['industry','Industry or manufacturing'],['other','Other']])}</div></div>
+  <p class="panel-title">Location and timing</p>
+  <div class="panel">
   <div class="field"><span class="q">Where is it based? ${auto('province')}</span>${seg('province',[['malaga','Málaga province'],['andalucia','Elsewhere in Andalucía'],['outside','Outside Andalucía']])}</div>
   <div class="field"><span class="q">Town size</span><p class="hint">San Pedro de Alcántara counts as Marbella, which is over 20,000.</p>${seg('town',[['small','Under 10,000'],['mid','10,000 to 20,000'],['large','Over 20,000'],['unsure','Not sure']])}</div>
-  <div class="field"><span class="q">When did the business start trading? ${auto('start')}</span><p class="hint">Your IAE registration date (alta en Hacienda).</p>
-    <div class="row"><select data-k="startM" aria-label="Start month">${months(p.startM)}</select><select data-k="startY" aria-label="Start year">${years(p.startY,1990)}</select></div></div>
-  <div class="field"><label class="q" for="employees">Number of employees</label><p class="hint">Not counting owners. Part-time staff count as one each.</p><input type="number" id="employees" data-k="employees" min="0" max="999" value="${esc(p.employees)}" style="max-width:8rem"></div>
-  <p class="msg err" id="detmsg"></p>
-  <div class="actions"><button class="primary" data-act="toQuestions">Continue</button><button class="ghost" data-go="1">Back</button></div>`;
+  <div class="field"><span class="q">Is the business trading yet? ${auto('start')}</span>${seg('trading',[['yes','Yes, already trading'],['notyet','Not yet']])}
+    ${planned?`<p class="hint" style="margin-top:.6rem">We’ll treat it as starting this month (${MONTHS[TODAY.getMonth()]} ${TODAY.getFullYear()}).</p>`:`<p class="hint" style="margin-top:.6rem">When did it start? Your IAE registration date (alta en Hacienda).</p>
+    <div class="row"><select data-k="startM" aria-label="Start month">${months(p.startM)}</select><select data-k="startY" aria-label="Start year">${years(p.startY,1990)}</select></div>`}</div></div>
+  <p class="msg err" id="detmsg" role="alert"></p>
+  <div class="actions"><button class="primary" data-act="toQuestions">Continue<span class="arr" aria-hidden="true">→</span></button></div>`;
 }
 function vQuestions(){
   const qs = QUESTIONS.filter(questionRelevant);
-  return `${progress()}<h2>${qs.length} quick question${qs.length===1?'':'s'}</h2><p class="lede">Only what decides the grants that could still apply to you. Questions disappear as grants are ruled in or out.</p>
-  ${qs.map(q=>`<div class="field">${q.html(S.p)}</div>`).join('')}
-  <div class="actions"><button class="primary" data-go="4">Show my grants</button><button class="ghost" data-go="2">Back</button></div>`;
+  const done = q => String(S.p[q.k]) !== String(q.unknown) && S.p[q.k] !== '';
+  return `${progress()}<h2>${qs.length} quick question${qs.length===1?'':'s'}</h2><p class="lede">Only what decides the grants that could still apply to you. Questions disappear as grants are ruled in or out. “Not sure” is fine: we’ll mark those grants to confirm.</p>
+  <div class="panel">${qs.map((q,i)=>`<div class="field qcard ${done(q)?'answered':''}"><span class="qn" aria-hidden="true">${done(q)?'✓':i+1}</span>${q.html(S.p)}</div>`).join('')}</div>
+  <div class="actions"><button class="primary" data-go="4">Show my grants<span class="arr" aria-hidden="true">→</span></button></div>`;
 }
 
 /* ---------- Views: results ---------- */
@@ -830,9 +931,10 @@ function vResults(){
 const selectedResults = () => evaluateAll().filter(x=>S.selected.has(x.g.id));
 function contactFields(){
   const c=S.contact;
-  return `<div class="field"><label class="q" for="cname">Your name</label><input type="text" id="cname" data-c="name" value="${esc(c.name)}"></div>
-  <div class="field"><label class="q" for="cemail">Email</label><input type="email" id="cemail" data-c="email" value="${esc(c.email)}"></div>
-  <div class="field"><label class="q" for="cphone">Phone (optional)</label><input type="tel" id="cphone" data-c="phone" value="${esc(c.phone)}"></div>`;
+  return `<div class="fields-2" style="border-top:0"><div class="field"><label class="q" for="cname">Your name</label><input type="text" id="cname" data-c="name" autocomplete="name" value="${esc(c.name)}"></div>
+  <div class="field"><label class="q" for="cemail">Email</label><input type="email" id="cemail" data-c="email" autocomplete="email" value="${esc(c.email)}"></div>
+  <div class="field"><label class="q" for="cphone">Phone <span class="opt">optional</span></label><input type="tel" id="cphone" data-c="phone" autocomplete="tel" value="${esc(c.phone)}"></div>
+  ${S.nif?'':`<div class="field"><label class="q" for="cnif">NIF, NIE or CIF <span class="opt">optional</span></label><input type="text" id="cnif" data-c="nif" autocomplete="off" spellcheck="false" maxlength="12" value="${esc(c.nif)}" style="text-transform:uppercase"><p class="hint" style="margin:.4rem 0 0">Add it if you have one. ${S.tier==='dfy'?'We need it before we can submit for you.':'You’ll need it to apply.'}</p></div>`}</div>`;
 }
 function ready(){ const c=S.contact; return c.name.trim() && /\S+@\S+\.\S+/.test(c.email) && S.agree.data && (S.tier!=='dfy' || S.agree.fee); }
 const isDone = e => (S.docFiles[e.doc.id]||[]).length>0 || S.prepare[e.doc.id] || S.have[e.doc.id];
@@ -943,7 +1045,19 @@ async function doPayLink(){
 /* ---------- Actions ---------- */
 function render(){ app.innerHTML = S.special ? vSpecial() : [null,vStart,vDetails,vQuestions,vResults,vApply][S.step](); S.animate=false; }
 function rerenderKeepScroll(){ const y=window.scrollY; render(); window.scrollTo(0,y); }
-function go(n){ if(n===4&&S.step===3) S.animate=true; S.step=n; S.err=''; render(); window.scrollTo({top:0}); }
+function go(n, push=true){
+  if(n===4&&S.step===3) S.animate=true;
+  S.step=n; S.maxStep=Math.max(S.maxStep,n); S.err='';
+  if (push) history.pushState({step:n}, '');
+  render(); window.scrollTo({top:0});
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches){ app.classList.remove('enter'); void app.offsetWidth; app.classList.add('enter'); }
+}
+window.addEventListener('popstate', e=>{
+  const n=e.state?.step; if (!n || S.special || n===S.step) return;
+  if (S.sent) { history.pushState({step:S.step}, ''); return; }
+  go(Math.min(n, S.maxStep), false);
+});
+function setTrading(v){ S.p.trading=v; if (v==='notyet'){ S.p.startY=String(TODAY.getFullYear()); S.p.startM=String(TODAY.getMonth()+1); } else { S.p.startY=''; S.p.startM=''; } }
 const guessType = f => f.type || ({pdf:'application/pdf',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',rtf:'application/rtf',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}[(f.name.split('.').pop()||'').toLowerCase()] || '');
 
 async function doLookup(){
@@ -955,7 +1069,7 @@ async function doLookup(){
   catch(e){ L={valid:true,nif:v.v,lookup:'error',entity:/^[XYZ\d]/.test(v.v)?'autonomo':(v.v[0]==='B'?'sl':'other'),label:''}; }
   S.busy=false;
   if (L.valid===false){ S.err=L.message; return render(); }
-  S.lookup=L; S.demo=false; S.p=blank(); S.auto={}; S.company=null; S.selected.clear();
+  S.lookup=L; S.demo=false; S.explore=null; S.maxStep=1; S.p=blank(); S.auto={}; S.company=null; S.selected.clear();
   S.p.entity=L.entity; S.auto.entity=L.type==='cif';
   if (L.lookup==='found' && L.company){
     const c=L.company; S.company=c;
@@ -969,10 +1083,12 @@ async function doLookup(){
 }
 async function doSend(){
   if(!ready()||S.busy) return;
+  let nif=S.nif||null;
+  if (!nif && S.contact.nif.trim()){ const v=checkNif(S.contact.nif); if(!v.ok){ S.err=v.msg; return rerenderKeepScroll(); } nif=v.v; }
   S.busy=true; S.err=''; render();
   const sel=selectedResults(), files=[], fileMap={};
   if (S.tier==='dfy') for (const [doc,list] of Object.entries(S.docFiles)) list.forEach((f,i)=>{ const key=`${doc}:${i}`; fileMap[key]=f; files.push({key, doc, name:f.name, size:f.size, type:guessType(f)}); });
-  const body={ tier:S.tier, nif:S.nif||null, company:S.company||{}, profile:{...S.p, prepareForMe:Object.keys(S.prepare).filter(k=>S.prepare[k])}, contact:S.contact,
+  const body={ tier:S.tier, nif, company:S.company||{}, profile:{...S.p, prepareForMe:Object.keys(S.prepare).filter(k=>S.prepare[k])}, contact:S.contact,
     consents:{data:S.agree.data, fee:S.tier==='dfy'&&S.agree.fee},
     grants:sel.map(x=>({id:x.g.id, amount:x.r.max||null, fee:S.tier==='dfy'?feeFor(x):null})), files };
   try{
@@ -1000,12 +1116,14 @@ app.addEventListener('click', e=>{
   if (t.dataset.rm){ const [d,i]=t.dataset.rm.split(':'); S.docFiles[d].splice(+i,1); if(!S.docFiles[d].length) delete S.docFiles[d]; return rerenderKeepScroll(); }
   const a=t.dataset.act;
   if (a==='nif') doLookup();
-  if (a==='demo'){ S.demo=true; S.lookup=null; S.company=null; S.nif=''; S.auto={}; S.selected.clear();
+  if (a==='demo'){ S.demo=true; S.explore=null; S.maxStep=1; S.lookup=null; S.company=null; S.nif=''; S.auto={}; S.selected.clear();
     S.p={...blank(), name:'Easy Beans Coffee', entity:'sl', province:'malaga', town:'large', sector:'hospitality', employees:'3', startY:'2026', startM:'4', turnover:'no'}; go(2); }
+  if (a==='explore'){ const plan=t.dataset.plan; S.explore=plan; S.demo=false; S.lookup=null; S.company=null; S.nif=''; S.auto={}; S.selected.clear(); S.maxStep=1;
+    S.p=blank(); if (plan==='autonomo'||plan==='sl'){ S.p.entity=plan; S.p.alta='notyet'; S.p.employees='0'; setTrading('notyet'); } go(2); }
   if (a==='toQuestions'){ if(!S.p.entity||!S.p.province){ document.getElementById('detmsg').textContent='Choose a business type and where it’s based to continue.'; return; } go(3); }
   if (a==='send') doSend();
   if (a==='paylink') doPayLink();
-  if (a==='restart'){ Object.assign(S,{step:1,nif:'',lookup:null,company:null,auto:{},demo:false,p:blank(),selected:new Set(),filter:'all',tier:null,contact:{name:'',email:'',phone:''},agree:{data:false,fee:false},docFiles:{},prepare:{},have:{},sent:null,err:''}); render(); }
+  if (a==='restart'){ Object.assign(S,{step:1,maxStep:1,nif:'',lookup:null,company:null,auto:{},demo:false,explore:null,p:blank(),selected:new Set(),filter:'all',tier:null,contact:{name:'',email:'',phone:'',nif:''},agree:{data:false,fee:false},docFiles:{},prepare:{},have:{},sent:null,err:''}); render(); history.pushState({step:1}, ''); }
 });
 app.addEventListener('keydown', e=>{ if(e.key==='Enter'&&e.target.id==='nif'){ e.preventDefault(); doLookup(); } });
 app.addEventListener('input', e=>{
@@ -1029,6 +1147,7 @@ app.addEventListener('change', e=>{
   if (t.dataset.k && (t.type==='radio'||t.tagName==='SELECT')){
     S.p[t.dataset.k]=t.value; if (t.type==='radio') S.auto[t.dataset.k]=false;
     if (t.dataset.k==='alta' && t.value==='notyet') S.p.tarifaPlana='unsure';
+    if (t.dataset.k==='trading') setTrading(t.value);
     rerenderKeepScroll();
     const again=app.querySelector(`[data-k="${t.dataset.k}"]${t.type==='radio'?`[value="${t.value}"]`:''}`); if(again) again.focus({preventScroll:true});
   }
@@ -1048,6 +1167,7 @@ app.addEventListener('change', e=>{
   else if (q.get('setup')==='cancel') S.special={kind:'cancel', ref:q.get('ref')};
   else if (q.get('pay')) S.special={kind:'form', ref:q.get('pay')};
   if (S.special) history.replaceState(null,'',location.pathname);
+  else history.replaceState({step:1}, '');
   render();
 })();
 </script>
