@@ -186,7 +186,7 @@ See `docs/grants-audit.md`. Summary:
 ## 12. Open work (priority order)
 
 1. ~~Deploy to the new Supabase project + Vercel from this repo~~ Done 28 Sep 2026 (see §15). Still needed: the Edge Function secrets.
-2. **Verify email delivery from Edge Functions.** SMTP on port 465 from Supabase Edge works: on 28 Sep, `nodemailer` reached Gmail's AUTH step. The first send failed with `534 Application-specific password required`, so `GMAIL_APP_PASSWORD` must be a Google app password, not the account password.
+2. ~~Verify email delivery from Edge Functions~~ Works. Gmail SMTP (port 465, `nodemailer`) from Supabase Edge sent the first email on 28 Sep 2026 at 23:00 Madrid time (the weekly digest). `GMAIL_APP_PASSWORD` must be a Google app password; the account password fails with `534`.
 3. **Verify APIEmpresas response field names** with a real key and adjust `normalise()` in `company-lookup`. The API takes the key in an `X-API-KEY` header (confirmed 28 Sep from its 401 response and fixed in code). The saved key was rejected as `API_KEY_INVALID`, so field names are still unverified.
 4. **Verify the BDNS API query** in `email-jobs` (`bdnsNew`); the parameter names are unconfirmed and it currently degrades gracefully.
 5. Add the Easy Beans CIF to `site/config.js` (`operatorNif`); it's used in the representation template and should appear on invoices.
@@ -220,5 +220,8 @@ select admin.charge_now('SOL-XXXX','grant-id');                -- charge on the 
   - Migrations 0001–0005 are applied (loaded from GitHub and checked against each file's md5). `supabase_migrations.schema_migrations` uses the repo file versions, so after `supabase link` the CLI sees them as applied.
   - All 7 functions are deployed with the `verify_jwt` settings from `config.toml`. They match the repo byte for byte, except line 8 of `company-lookup/index.ts`: its accent regex was uploaded with literal characters instead of `\u` escapes (same behaviour). The next `supabase functions deploy` restores the exact file.
   - Vault secrets `project_url` and `anon_key` are set. Cron jobs `process-fees` and `email-jobs` (every 10 min) and `close-expired-grants` (daily) are scheduled.
-  - **Edge Function secrets are not set yet.** The owner adds them in the dashboard (Edge Functions → Secrets): `SITE_URL` (the live URL), `GMAIL_USER`, `GMAIL_APP_PASSWORD`, `OWNER_EMAIL`, `APIEMPRESAS_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`. Until then no emails, company lookups or payments, and new requests are only visible in `admin.case_overview`.
+  - **Edge Function secrets** were set by the owner on 28 Sep: `SITE_URL`, `GMAIL_USER`, `GMAIL_APP_PASSWORD` and `OWNER_EMAIL` (owner alerts go to arononeillwork@gmail.com), plus `APIEMPRESAS_KEY`, `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`.
+    - Email works.
+    - `APIEMPRESAS_KEY` was rejected by APIEmpresas as invalid and needs re-copying.
+    - `STRIPE_SECRET_KEY` is a **test** key, but the first webhook endpoint was created in **live** mode (`we_1UKlRiC0kB9V6qqsrB9bFljT`). While testing, `STRIPE_WEBHOOK_SECRET` must come from an identical endpoint in the Stripe sandbox. Keep the live one for go-live, with `sk_live_` and its own `whsec_`.
 - The live site no longer uses the old Supabase project (§13).
