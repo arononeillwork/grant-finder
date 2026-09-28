@@ -200,7 +200,7 @@ See `docs/grants-audit.md`. Summary:
 
 - **Vercel:** project `solicita` on the arononeillwork Hobby account; URL `https://solicita-arononeillworks-projects.vercel.app`. Its manual uploads from 23–24 Sep pointed at the old Supabase project. It now deploys from GitHub (§15).
 - **Supabase (old):** project ref `rapzydlruzcrdnussvrf` in an org named **"Shopa"** whose login the owner can't identify. Its cron jobs are unscheduled and it holds no client data (0 cases). Delete it if the login is ever found.
-- **Stripe:** "Easy Beans Coffee" account, live mode. Build and test in **test mode** first.
+- **Stripe:** "Easy Beans Coffee" account (`acct_1TlZc6C0kB9V6qqs`). The owner chose to run it in **live mode** from the start (28 Sep); see §15.
 
 ## 14. Useful SQL
 
@@ -223,5 +223,7 @@ select admin.charge_now('SOL-XXXX','grant-id');                -- charge on the 
   - **Edge Function secrets** were set by the owner on 28 Sep: `SITE_URL`, `GMAIL_USER`, `GMAIL_APP_PASSWORD` and `OWNER_EMAIL` (owner alerts go to arononeillwork@gmail.com), plus `APIEMPRESAS_KEY`, `STRIPE_SECRET_KEY` and `STRIPE_WEBHOOK_SECRET`.
     - Email works.
     - `APIEMPRESAS_KEY` was rejected by APIEmpresas as invalid and needs re-copying.
-    - `STRIPE_SECRET_KEY` is a **test** key, but the first webhook endpoint was created in **live** mode (`we_1UKlRiC0kB9V6qqsrB9bFljT`). While testing, `STRIPE_WEBHOOK_SECRET` must come from an identical endpoint in the Stripe sandbox. Keep the live one for go-live, with `sk_live_` and its own `whsec_`.
+    - Stripe: the owner chose **live mode** (no sandbox testing). `STRIPE_SECRET_KEY` is still a **test** key; swap in the `sk_live_` key once the account is activated. `STRIPE_WEBHOOK_SECRET` must be the signing secret of live endpoint `we_1UKlRiC0kB9V6qqsrB9bFljT` (enabled, correct URL and the three events).
+    - **Blocker (28 Sep):** the live Stripe account isn't activated. Every payment method reads `available:false`, and SEPA Direct Debit is off. Until both are fixed, `payment-setup` can't create a Checkout session.
+    - Every Stripe call in `payment-setup`, `stripe-webhook` and `process-fees` was checked against Stripe's API spec 2026-08-26: no code change is needed for live. The fee charge (`process-fees`) has never run in either mode, so the first real award is its first run.
 - The live site no longer uses the old Supabase project (§13).
