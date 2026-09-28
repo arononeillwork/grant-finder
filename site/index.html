@@ -68,50 +68,192 @@ input[type=text],input[type=number],input[type=email],input[type=tel],select{fon
 .seg input:checked+span{background:var(--blue);border-color:var(--blue);color:#fff}
 .seg input:focus-visible+span{outline:3px solid var(--blue);outline-offset:2px}
 .actions{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-top:2.2rem}
-/* results */
-.headline-sum{font-size:1.1rem;margin:0 0 1rem}
-.filters{display:flex;gap:.45rem;flex-wrap:wrap;margin:1.2rem 0 .5rem}
-.chip{border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:999px;padding:.42rem .85rem;font-size:.92rem}
-.chip b{font-weight:700;color:var(--muted);margin-left:.3rem}
-.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}.chip.on b{color:#C9D3DC}
-.group{margin-top:2.2rem}
-.group>h3{font-size:1.05rem;margin-bottom:.15rem}
-.group>p{color:var(--muted);font-size:.93rem;margin:0 0 .9rem}
-.grant{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.15rem 1.25rem 1rem;margin-bottom:1rem;box-shadow:0 1px 2px rgba(23,34,46,.04)}
-.grant.s-yes{border-left:4px solid var(--ok)}.grant.s-check{border-left:4px solid var(--warn)}.grant.s-next{border-left:4px solid var(--next)}.grant.s-active{border-left:4px solid var(--active)}.grant.s-no{border-left:4px solid var(--line-strong)}
-.grant-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
-.eyebrow{margin:0 0 .2rem;font-size:.82rem;color:var(--muted)}
-.summary{margin:.55rem 0 0;color:var(--ink)}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.6rem;margin:.9rem 0 0;padding:0}
-.facts div{background:var(--bg);border-radius:10px;padding:.55rem .75rem}
-.facts dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-.facts dd{margin:.1rem 0 0;font-weight:700;font-size:.97rem}
-.urgent{color:var(--no)}
-.verdict{margin:.8rem 0 0;padding:.55rem .75rem;border-radius:10px;font-size:.94rem}
-.verdict.yes,.verdict.active{background:var(--ok-soft);color:#155D35}.verdict.check{background:var(--warn-soft);color:#774504}.verdict.no{background:var(--no-soft);color:#8A2922}.verdict.next{background:var(--next-soft);color:#44368C}
-.how{margin-top:.8rem;border-top:1px solid var(--line);padding-top:.6rem}
-.how>summary{cursor:pointer;color:var(--blue);font-weight:700;list-style:none;display:flex;align-items:center;gap:.4rem}
+/* results (step 4)
+   Layout: a summary panel that accounts for every grant checked, then one column of grant cards
+   grouped by status, with a sticky apply bar. Progressive: container queries, :has(), oklch/color-mix,
+   ::details-content, scroll-driven reveals and view transitions all fall back to a plain, readable page. */
+:root{
+  interpolate-size:allow-keywords;
+  --c-staff:#2457C5;--c-equipment:#B86A00;--c-digital:#6B4BD1;--c-startup:#1D7A46;--c-premises:#C2410C;
+  --r-card:20px;--ease-out:cubic-bezier(.2,.8,.2,1);
+  --shadow-1:0 1px 2px rgb(23 34 46 / .05),0 4px 16px -6px rgb(23 34 46 / .08);
+  --shadow-2:0 2px 4px rgb(23 34 46 / .05),0 18px 40px -16px rgb(23 34 46 / .22);
+}
+.results{container:results/inline-size}
+.wrap:has(.results){max-width:960px}
+.results h2{text-wrap:balance}
+.results p,.results li{text-wrap:pretty}
+
+/* overview */
+.overview{display:grid;grid-template-columns:minmax(0,1fr);gap:1.25rem;margin:1.2rem 0 1rem;padding:1.4rem 1.5rem;border-radius:24px;color:#fff;
+  background:radial-gradient(120% 140% at 0% 0%,#3A6FE0 0%,transparent 55%),radial-gradient(90% 120% at 100% 100%,#1B4396 0%,transparent 60%),linear-gradient(135deg,#2457C5,#1F3F8F);
+  box-shadow:0 20px 50px -24px rgb(27 67 150 / .7);position:relative;overflow:hidden;isolation:isolate}
+.overview::after{content:'';position:absolute;inset:0;z-index:-1;opacity:.35;
+  background-image:radial-gradient(rgb(255 255 255 / .22) 1px,transparent 1.4px);background-size:18px 18px;
+  mask-image:linear-gradient(115deg,transparent 35%,#000 100%);-webkit-mask-image:linear-gradient(115deg,transparent 35%,#000 100%)}
+@container results (min-width:640px){.overview{grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:end;gap:2rem}}
+.ov-k{margin:0;font-size:.78rem;text-transform:uppercase;letter-spacing:.09em;opacity:.8}
+.ov-big{margin:.15rem 0 .1rem;font-family:var(--display);font-weight:800;font-size:clamp(2.6rem,9vw,3.6rem);line-height:1;letter-spacing:-.035em;font-variant-numeric:tabular-nums}
+.ov-sub{margin:0;opacity:.88;font-size:.98rem}
+.meter{display:flex;gap:3px;height:12px;margin:.65rem 0 .8rem;border-radius:999px;overflow:hidden;background:rgb(255 255 255 / .15)}
+.meter i{flex:var(--n) 1 0;min-width:10px;background:var(--seg)}
+.legend{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.35rem .9rem;font-size:.88rem}
+.legend li{display:flex;align-items:center;gap:.4rem;white-space:nowrap}
+.legend i{width:.6rem;height:.6rem;border-radius:3px;background:var(--seg)}
+.legend b{font-variant-numeric:tabular-nums}
+.seg-yes{--seg:#6EE7A8}.seg-check{--seg:#FCD27A}.seg-active{--seg:#7DD3DE}.seg-next{--seg:#C4B8FF}.seg-no{--seg:rgb(255 255 255 / .38)}
+
+/* closing-soon banner */
+.soon{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;margin:0 0 1rem;padding:.8rem 1rem;border-radius:14px;
+  background:color-mix(in oklab,var(--no) 8%,var(--surface));border:1px solid color-mix(in oklab,var(--no) 25%,transparent);font-size:.95rem}
+.soon p{margin:0;flex:1 1 16rem;min-width:0}
+.soon b{color:var(--no)}
+.soon a{font-weight:700;white-space:nowrap}
+.pulse{flex:none;width:.65rem;height:.65rem;border-radius:50%;background:var(--no);box-shadow:0 0 0 0 color-mix(in oklab,var(--no) 50%,transparent);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 .55rem transparent}100%{box-shadow:0 0 0 0 transparent}}
+
+/* filters */
+.filters{display:flex;gap:.4rem;margin:1.4rem -.25rem .25rem;padding:.25rem;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}
+.filters::-webkit-scrollbar{display:none}
+.chip{flex:none;scroll-snap-align:start;display:inline-flex;align-items:center;gap:.45rem;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:.45rem .5rem .45rem .9rem;font-size:.92rem;transition:background .2s,border-color .2s,color .2s,box-shadow .2s}
+.chip:hover{border-color:var(--line-strong);box-shadow:var(--shadow-1)}
+.chip b{display:inline-grid;place-items:center;min-width:1.5rem;height:1.5rem;padding:0 .35rem;border-radius:999px;background:var(--bg);color:var(--muted);font-size:.8rem;font-variant-numeric:tabular-nums}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}
+.chip.on b{background:rgb(255 255 255 / .16);color:#fff}
+
+/* groups */
+.group{margin-top:2.3rem}
+.group-head{display:flex;align-items:center;gap:.6rem;margin-bottom:.15rem}
+.group-head h3{font-size:1.25rem;letter-spacing:-.01em}
+.count{display:inline-grid;place-items:center;min-width:1.6rem;height:1.6rem;padding:0 .45rem;border-radius:999px;font-size:.82rem;font-weight:700;background:var(--tone-soft);color:var(--tone)}
+.group>p{color:var(--muted);font-size:.94rem;margin:0 0 1rem}
+.cards{display:grid;gap:1rem}
+.t-yes{--tone:var(--ok);--tone-soft:var(--ok-soft)}.t-check{--tone:var(--warn);--tone-soft:var(--warn-soft)}.t-next{--tone:var(--next);--tone-soft:var(--next-soft)}.t-active{--tone:var(--active);--tone-soft:var(--active-soft)}.t-no{--tone:var(--muted);--tone-soft:var(--bg)}
+
+/* grant card */
+.gcard{container:card/inline-size;position:relative;border-radius:var(--r-card);scroll-margin-top:1.5rem;
+  background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(160deg,color-mix(in oklab,var(--tone) 38%,var(--line)),var(--line) 45%) border-box;
+  border:1px solid transparent;box-shadow:var(--shadow-1);transition:box-shadow .25s var(--ease-out),translate .25s var(--ease-out)}
+.gcard:hover{box-shadow:var(--shadow-2)}
+.gcard.s-no{background:var(--surface);border-color:var(--line);box-shadow:none}
+.gcard:has(.pick input:checked){background:linear-gradient(var(--surface),var(--surface)) padding-box,linear-gradient(160deg,var(--blue),color-mix(in oklab,var(--blue) 40%,var(--line))) border-box;
+  box-shadow:0 0 0 3px color-mix(in oklab,var(--blue) 18%,transparent),var(--shadow-2)}
+.gc-body{padding:1.25rem 1.3rem 1.1rem}
+.gc-top{display:grid;grid-template-columns:auto minmax(0,1fr);gap:.9rem;align-items:start}
+.gc-icon{display:grid;place-items:center;width:2.9rem;height:2.9rem;border-radius:14px;color:var(--cat);
+  background:linear-gradient(145deg,color-mix(in oklab,var(--cat) 16%,var(--surface)),color-mix(in oklab,var(--cat) 6%,var(--surface)));
+  box-shadow:inset 0 0 0 1px color-mix(in oklab,var(--cat) 18%,transparent)}
+.gc-icon svg{width:1.45rem;height:1.45rem;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.s-no .gc-icon{filter:grayscale(1);opacity:.6}
+.cat-staff{--cat:var(--c-staff)}.cat-equipment{--cat:var(--c-equipment)}.cat-digital{--cat:var(--c-digital)}.cat-startup{--cat:var(--c-startup)}.cat-premises{--cat:var(--c-premises)}
+.gc-title{display:flex;flex-direction:column;gap:.35rem;min-width:0}
+.gc-title h3{font-size:1.22rem;letter-spacing:-.012em;text-wrap:balance}
+.gc-meta{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .6rem}
+.eyebrow{margin:0;font-size:.82rem;color:var(--muted)}
+.pill{display:inline-flex;align-items:center;gap:.4rem;padding:.22rem .6rem .22rem .5rem;border-radius:999px;font-size:.78rem;font-weight:700;letter-spacing:.02em;background:var(--tone-soft);color:var(--tone);white-space:nowrap}
+.pill i{width:.45rem;height:.45rem;border-radius:50%;background:currentColor;box-shadow:0 0 0 3px color-mix(in oklab,currentColor 20%,transparent)}
+.results-in .pill{animation:pop .5s var(--ease-out) both;animation-delay:calc(var(--i,0) * 60ms)}
+@keyframes pop{0%{opacity:0;scale:.6}60%{opacity:1;scale:1.08}100%{scale:1}}
+.summary{margin:.85rem 0 0;color:var(--ink);max-width:62ch}
+
+/* stats */
+.stats{display:grid;grid-template-columns:minmax(0,1fr);gap:.5rem;margin:1rem 0 0}
+@container card (min-width:520px){.stats{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr) minmax(0,1fr)}}
+.stat{display:flex;flex-direction:column;gap:.1rem;padding:.7rem .85rem;border-radius:14px;background:var(--bg);min-width:0}
+.stat dd{margin:0}
+.stat .k{font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
+.stat .v{font-family:var(--display);font-weight:800;font-size:1.3rem;line-height:1.15;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.stat .v.long{font-family:var(--text);font-weight:700;font-size:1rem;letter-spacing:0}
+.stat .sub{font-size:.84rem;color:var(--muted);line-height:1.35}
+.stat.amount{background:color-mix(in oklab,var(--tone) 7%,var(--bg))}
+.stat.amount .v{color:color-mix(in oklab,var(--tone) 70%,var(--ink))}
+.s-no .stat.amount{background:var(--bg)}.s-no .stat.amount .v{color:var(--ink)}
+.stat .sub.urgent{color:var(--no);font-weight:700}
+.stat .sub.soonish{color:var(--warn);font-weight:700}
+.dots{display:flex;flex-wrap:wrap;gap:4px;margin:.3rem 0 .15rem}
+.dots i{width:.8rem;height:.8rem;border-radius:4px;background:var(--line)}
+.dots i.pass{background:var(--ok)}.dots i.fail{background:var(--no)}.dots i.unknown{background:repeating-linear-gradient(135deg,var(--warn) 0 2px,color-mix(in oklab,var(--warn) 35%,var(--surface)) 2px 4px)}
+
+/* verdict */
+.verdict{display:flex;gap:.55rem;align-items:flex-start;margin:.85rem 0 0;padding:.65rem .8rem;border-radius:12px;font-size:.94rem;background:var(--tone-soft);color:color-mix(in oklab,var(--tone) 80%,var(--ink))}
+.verdict .vi{flex:none;display:grid;place-items:center;width:1.25rem;height:1.25rem;margin-top:.1rem;border-radius:50%;background:var(--tone);color:#fff;font-size:.72rem;font-weight:700}
+.s-no .verdict{background:var(--no-soft);color:#8A2922}.s-no .verdict .vi{background:var(--no)}
+
+/* details */
+.how{border-top:1px solid var(--line)}
+.how>summary{cursor:pointer;list-style:none;display:flex;align-items:center;justify-content:space-between;gap:.5rem;padding:.8rem 1.3rem;font-weight:700;color:var(--blue);border-radius:0 0 var(--r-card) var(--r-card);transition:background .2s}
+.how>summary:hover{background:color-mix(in oklab,var(--blue) 5%,transparent)}
 .how>summary::-webkit-details-marker{display:none}
-.how>summary::before{content:'+';display:inline-grid;place-items:center;width:1.2rem;height:1.2rem;border:1.5px solid currentColor;border-radius:50%;font-size:.85rem;line-height:1}
-.how[open]>summary::before{content:'–'}
-.ticks{list-style:none;margin:0;padding:0}
-.ticks li{display:grid;grid-template-columns:1.5rem 1fr;gap:.4rem;margin:.35rem 0;font-size:.95rem}
-.ic{display:inline-grid;place-items:center;width:1.25rem;height:1.25rem;border-radius:50%;font-size:.75rem;font-weight:700;margin-top:.15rem}
-.ic.pass{background:var(--ok-soft);color:var(--ok)}.ic.fail{background:var(--no-soft);color:var(--no)}.ic.unknown{background:var(--warn-soft);color:var(--warn)}.ic.dot{background:var(--bg);color:var(--muted)}
-.ticks small{display:block;color:var(--muted);font-size:.87rem}
-.plain{margin:0;padding-left:1.2rem;font-size:.95rem}.plain li{margin:.25rem 0}
-.tag{display:inline-block;font-size:.75rem;font-weight:700;background:var(--blue-soft);color:var(--blue-ink);border-radius:6px;padding:.05rem .4rem;margin-left:.35rem;vertical-align:1px}
-.meta{font-size:.86rem;color:var(--muted);margin-top:1rem}
-.pick{display:flex;align-items:center;gap:.55rem;margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--line);font-weight:700}
-.pick input{width:1.15rem;height:1.15rem;accent-color:var(--blue)}
-.pick small{font-weight:400;color:var(--muted);margin-left:auto;text-align:right}
-.stamp{flex:none;font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.07em;font-size:.72rem;line-height:1;padding:.42rem .6rem;border:2.5px solid currentColor;border-radius:6px;box-shadow:inset 0 0 0 2px var(--surface),inset 0 0 0 3.5px currentColor;transform:rotate(-5deg);white-space:nowrap;margin-top:.15rem;background:var(--surface)}
-.stamp.yes{color:var(--ok)}.stamp.check{color:var(--warn)}.stamp.next{color:var(--next)}.stamp.no{color:var(--no)}.stamp.active{color:var(--active)}
-@keyframes thunk{0%{opacity:0;transform:rotate(-5deg) scale(1.9)}65%{opacity:1;transform:rotate(-5deg) scale(.93)}100%{opacity:1;transform:rotate(-5deg) scale(1)}}
-.results-in .stamp{animation:thunk .42s cubic-bezier(.2,.8,.3,1.15) both;animation-delay:calc(var(--i,0)*70ms)}
-@media (prefers-reduced-motion:reduce){.results-in .stamp{animation:none}}
-.nomatch>summary{font-family:var(--display);font-weight:600;font-size:1.05rem;cursor:pointer;margin-bottom:.8rem}
-.empty{color:var(--muted);padding:1rem 0}
+.how>summary::after{content:'';width:.55rem;height:.55rem;border-right:2px solid currentColor;border-bottom:2px solid currentColor;rotate:45deg;translate:0 -.15rem;transition:rotate .3s var(--ease-out),translate .3s var(--ease-out)}
+.how[open]>summary::after{rotate:225deg;translate:0 .15rem}
+.how[open]>summary{border-radius:0}
+.how::details-content{block-size:0;overflow:clip;transition:block-size .35s var(--ease-out),content-visibility .35s allow-discrete}
+.how[open]::details-content{block-size:auto}
+.how-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:.2rem 2rem;padding:0 1.3rem 1.2rem}
+@container card (min-width:600px){.how-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.how-grid .span{grid-column:1/-1}}
+h4{font-size:.74rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:1.1rem 0 .5rem}
+.ticks{list-style:none;margin:0;padding:0;display:grid;gap:.45rem}
+.ticks li{display:grid;grid-template-columns:1.4rem minmax(0,1fr);gap:.5rem;font-size:.94rem}
+.ic{display:inline-grid;place-items:center;width:1.3rem;height:1.3rem;border-radius:50%;font-size:.72rem;font-weight:700;margin-top:.12rem}
+.ic.pass{background:var(--ok-soft);color:var(--ok)}.ic.fail{background:var(--no-soft);color:var(--no)}.ic.unknown{background:var(--warn-soft);color:var(--warn)}
+.ticks small{display:block;color:var(--muted);font-size:.86rem}
+.plain{list-style:none;margin:0;padding:0;display:grid;gap:.35rem;font-size:.94rem}
+.plain li{position:relative;padding-left:1.1rem}
+.plain li::before{content:'';position:absolute;left:.1rem;top:.6em;width:.4rem;height:.4rem;border-radius:2px;background:color-mix(in oklab,var(--cat,var(--blue)) 55%,var(--surface))}
+.paid{margin:0;font-size:.94rem}
+ol.steps{list-style:none;counter-reset:st;margin:0;padding:0;display:grid;gap:.1rem}
+ol.steps li{counter-increment:st;position:relative;padding:0 0 .7rem 2.2rem;font-size:.94rem}
+ol.steps li::before{content:counter(st);position:absolute;left:0;top:0;display:grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:50%;background:var(--blue-soft);color:var(--blue-ink);font-size:.78rem;font-weight:700}
+ol.steps li:not(:last-child)::after{content:'';position:absolute;left:.72rem;top:1.65rem;bottom:.1rem;width:2px;background:var(--line)}
+.tag{display:inline-block;font-size:.72rem;font-weight:700;background:var(--blue-soft);color:var(--blue-ink);border-radius:6px;padding:.05rem .4rem;margin-left:.35rem;vertical-align:1px}
+.meta{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .8rem;font-size:.86rem;color:var(--muted);margin:1.1rem 0 0;padding-top:.9rem;border-top:1px dashed var(--line)}
+.meta a{font-weight:700}
+.verified{display:inline-flex;align-items:center;gap:.3rem;color:var(--ok);font-weight:700}
+
+/* pick */
+.pick{display:flex;align-items:center;gap:.8rem;flex-wrap:wrap;padding:.85rem 1.3rem;border-top:1px solid var(--line);cursor:pointer;background:color-mix(in oklab,var(--bg) 60%,var(--surface));transition:background .25s}
+.gcard:not(:has(.how)) .pick,.pick:last-child{border-radius:0 0 var(--r-card) var(--r-card)}
+.pick input{position:absolute;opacity:0;width:1px;height:1px}
+.switch{flex:none;position:relative;width:2.6rem;height:1.5rem;border-radius:999px;background:var(--line-strong);transition:background .25s}
+.switch::after{content:'';position:absolute;top:.2rem;left:.2rem;width:1.1rem;height:1.1rem;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgb(0 0 0 / .25);transition:translate .25s var(--ease-out)}
+.pick input:checked+.switch{background:var(--blue)}
+.pick input:checked+.switch::after{translate:1.1rem 0}
+.pick input:focus-visible+.switch{outline:3px solid var(--blue);outline-offset:2px}
+.pick .lbl{font-weight:700}
+.pick .lbl .on{display:none}
+.pick:has(input:checked){background:color-mix(in oklab,var(--blue) 7%,var(--surface))}
+.pick:has(input:checked) .lbl .on{display:inline;color:var(--blue-ink)}
+.pick:has(input:checked) .lbl .off{display:none}
+.pick small{margin-left:auto;color:var(--muted);font-size:.85rem}
+
+.nomatch{margin-top:2.3rem}
+.nomatch>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:.6rem;font-family:var(--display);font-weight:600;font-size:1.15rem;padding:.8rem 1rem;border:1px dashed var(--line-strong);border-radius:14px;color:var(--muted)}
+.nomatch>summary::-webkit-details-marker{display:none}
+.nomatch>summary::after{content:'Show';margin-left:auto;font-family:var(--text);font-size:.88rem;font-weight:700;color:var(--blue)}
+.nomatch[open]>summary::after{content:'Hide'}
+.nomatch[open]>summary{margin-bottom:1rem}
+.empty{color:var(--muted);padding:1.2rem;border:1px dashed var(--line-strong);border-radius:14px;text-align:center}
+
+/* sticky apply bar */
+.applybar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin:2.2rem -.5rem 0;padding:.75rem .9rem calc(.75rem + env(safe-area-inset-bottom,0px));
+  border-radius:18px 18px 0 0;background:color-mix(in oklab,var(--surface) 82%,transparent);backdrop-filter:blur(14px) saturate(1.4);-webkit-backdrop-filter:blur(14px) saturate(1.4);
+  border:1px solid var(--line);border-bottom:0;box-shadow:0 -10px 30px -18px rgb(23 34 46 / .35)}
+.ab-info{flex:1 1 12rem;min-width:0;display:flex;flex-direction:column}
+.ab-info b{font-size:1rem}
+.ab-info small{color:var(--muted);font-size:.85rem}
+@container results (max-width:520px){.ab-info small{display:none}.ab-info{flex-basis:100%}.applybar .ghost{flex:none}.applybar .primary{flex:1 1 auto}}
+.applybar .primary{transition:background .2s,scale .2s var(--ease-out)}
+.applybar .primary:not(:disabled):active{scale:.97}
+
+/* motion */
+.results-in .gcard{animation:rise .55s var(--ease-out) both;animation-delay:calc(min(var(--i,0),6) * 60ms)}
+@keyframes rise{from{opacity:0;translate:0 18px}to{opacity:1;translate:0 0}}
+::view-transition-group(*){animation-duration:.32s;animation-timing-function:cubic-bezier(.2,.8,.2,1)}
+@media (prefers-reduced-motion:reduce){
+  .results-in .gcard,.results-in .pill,.pulse{animation:none}
+  .how::details-content{transition:none}
+  ::view-transition-group(*),::view-transition-old(*),::view-transition-new(*){animation:none}
+}
 /* apply */
 .recap{margin:.6rem 0 0;padding-left:1.2rem}
 .tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.9rem;margin-top:1.4rem}
@@ -566,65 +708,122 @@ function vQuestions(){
 }
 
 /* ---------- Views: results ---------- */
-function deadlineText(x){
+const CAT_ICON = {
+  staff:'<circle cx="9" cy="8" r="3.2"/><path d="M3 19c.6-3.2 3-5 6-5s5.4 1.8 6 5"/><circle cx="17" cy="9" r="2.5"/><path d="M16.2 14.2c2.5.3 4.2 1.9 4.8 4.8"/>',
+  equipment:'<path d="M13 3 5 13.5h6L10 21l8-10.5h-6z"/>',
+  digital:'<rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16.5V20"/>',
+  startup:'<path d="M12 21v-9"/><path d="M12 12c0-4 3-6.5 7.5-6.5 0 4.5-3 6.5-7.5 6.5z"/><path d="M12 14.5c0-3-2.3-5-6-5 0 3.4 2.3 5 6 5z"/>',
+  premises:'<path d="M4 10v10h16V10"/><path d="M3 5.5 4.5 3h15L21 5.5V8a2.5 2.5 0 0 1-4.5 1.5A2.5 2.5 0 0 1 12 9.5a2.5 2.5 0 0 1-4.5 0A2.5 2.5 0 0 1 3 8z"/><path d="M10 20v-5h4v5"/>'
+};
+const catIcon = c => `<span class="gc-icon cat-${c||'staff'}" aria-hidden="true"><svg viewBox="0 0 24 24">${CAT_ICON[c]||CAT_ICON.staff}</svg></span>`;
+const lower1 = s => s.charAt(0).toLowerCase()+s.slice(1);
+const deadlineOf = x => x.r.deadline || (x.g.closes && D(x.g.closes));
+
+function deadlineParts(x){
   const {g,r,status}=x;
-  if (status==='next') return g.window_state==='upcoming' ? 'Not open yet' : (r.timing==='next' ? 'Later for you' : 'Closed for now');
-  if (g.window_state==='permanent') return 'All year';
-  const dl = r.deadline || (g.closes && D(g.closes));
-  if (!dl) return 'Until funds run out';
+  if (status==='next'){
+    const v = g.window_state==='upcoming' ? 'Not open yet' : (r.timing==='next' ? 'Later for you' : 'Closed for now');
+    return {v, sub: g.window_state==='closed' && g.closes ? `Last call closed ${fmt(D(g.closes))}` : ''};
+  }
+  if (g.window_state==='permanent') return {v:'All year', sub:'No deadline'};
+  const dl = deadlineOf(x);
+  if (!dl) return {v:'Until funds run out', sub:''};
   const n = daysTo(dl);
-  return `${fmt(dl)}${n<=14&&n>=0?` <span class="urgent">(${n===0?'last day':n+' day'+(n===1?'':'s')+' left'})</span>`:''}`;
+  if (n<0) return {v:fmt(dl), sub:''};
+  return {v:fmt(dl), sub: n===0 ? 'Last day' : `${n} day${n===1?'':'s'} left`, cls: n<=14 ? 'urgent' : n<=45 ? 'soonish' : ''};
+}
+function amountParts(x){
+  const txt = x.r.amount || '', m = x.r.max;
+  if (m>0 && txt.includes(eur(m))) return {v:eur(m), sub:txt===eur(m)?'':txt};
+  return {v:txt, sub:'', long:true};
 }
 function verdict(x){
   const {g,r,status}=x, fails=r.conds.filter(c=>c.state==='fail'), unk=r.conds.filter(c=>c.state==='unknown');
-  if (status==='active') return `<p class="verdict active">✓ ${esc(r.conds[0]?.label||'Already yours.')}</p>`;
-  if (status==='no') return `<p class="verdict no">✕ Not a match: ${esc(fails[0].label.charAt(0).toLowerCase()+fails[0].label.slice(1))}.${fails[0].note?' '+esc(fails[0].note):''}</p>`;
-  if (status==='next') return `<p class="verdict next">${esc(r.whenNote || g.next_call || 'Watch for the next call.')}</p>`;
-  if (status==='check') return `<p class="verdict check">? To confirm: ${unk.slice(0,2).map(c=>esc(c.label.charAt(0).toLowerCase()+c.label.slice(1))).join('; ')}${unk.length>2?` and ${unk.length-2} more`:''}.</p>`;
-  return `<p class="verdict yes">✓ You meet every requirement we can check.</p>`;
+  const v = (icon, html) => `<p class="verdict"><span class="vi" aria-hidden="true">${icon}</span><span>${html}</span></p>`;
+  if (status==='active') return v('✓', esc(r.conds[0]?.label||'Already yours.'));
+  if (status==='no') return v('✕', `Not a match: ${esc(lower1(fails[0].label))}.${fails[0].note?' '+esc(fails[0].note):''}`);
+  if (status==='next') return v('↻', esc(r.whenNote || g.next_call || 'Watch for the next call.'));
+  if (status==='check') return v('?', `To confirm: ${unk.slice(0,2).map(c=>esc(lower1(c.label))).join('; ')}${unk.length>2?` and ${unk.length-2} more`:''}.`);
+  return v('✓', 'You meet every requirement we can check.');
 }
 function card(x,i){
-  const {g,r,status}=x, open=status==='yes'||status==='check';
+  const {g,r,status}=x, open=status==='yes'||status==='check', cat=CATS[g.category];
   const met=r.conds.filter(c=>c.state==='pass').length, total=r.conds.length;
   const reqs = r.conds.map(c=>`<li><span class="ic ${c.state}" aria-label="${c.state==='pass'?'Met':c.state==='fail'?'Not met':'To confirm'}">${ICON[c.state]}</span><span>${esc(c.label)}${c.note?`<small>${esc(c.note)}</small>`:''}</span></li>`).join('');
   const docs = docsForGrant(g);
   const applyDocs = docs.filter(d=>d.doc.stage==='apply'), afterDocs = docs.filter(d=>d.doc.stage==='after');
   const docLi = d => `<li>${esc(d.doc.name)}${d.doc.template_key?'<span class="tag">Template</span>':''}${d.doc.kind==='form'&&!d.doc.template_key?'<span class="tag">Official form</span>':''}${!d.row.required?' <span class="req o">Optional</span>':''}</li>`;
-  const how = `<details class="how"><summary>How it works</summary>
-    <h4>Requirements, checked against your answers</h4><ul class="ticks">${reqs}</ul>
-    ${g.covers?.length?`<h4>What it pays for</h4><ul class="plain">${g.covers.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>`:''}
-    ${g.paid?`<h4>How you get paid</h4><p style="margin:0">${esc(g.paid)}</p>`:''}
-    ${g.obligations?.length?`<h4>What you commit to</h4><ul class="plain">${g.obligations.map(o=>`<li>${esc(o)}</li>`).join('')}</ul>`:''}
-    ${applyDocs.length?`<h4>Documents to apply</h4><ul class="plain">${applyDocs.map(docLi).join('')}</ul>`:''}
-    ${afterDocs.length?`<h4>After approval</h4><ul class="plain">${afterDocs.map(docLi).join('')}</ul>`:''}
-    ${g.steps?.length?`<h4>Steps</h4><ol class="steps">${g.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>`:''}
-    <p class="meta"><a href="${esc(g.source_url)}" target="_blank" rel="noopener">Official page</a>. ${g.verified_at?`Checked ${fmt(D(g.verified_at))}.`:'Not yet verified by us.'}${g.verification_note?` ${esc(g.verification_note)}`:''}</p>
-  </details>`;
-  const pick = open && g.selectable ? `<label class="pick"><input type="checkbox" data-pick="${esc(g.id)}" ${S.selected.has(g.id)?'checked':''}> Add to my applications<small>Done-for-you fee if awarded: ${eur(feeFor(x))}</small></label>` : '';
-  return `<article class="grant s-${status}"><div class="grant-head"><div><p class="eyebrow">${esc(CAT_LABEL[CATS[g.category]]||'')} · ${esc(g.body)}</p><h3>${esc(g.name)}</h3></div><span class="stamp ${status}" style="--i:${i}">${STAMP[status]}</span></div>
-    ${g.summary?`<p class="summary">${esc(g.summary)}</p>`:''}
-    <dl class="facts"><div><dt>Amount</dt><dd>${esc(r.amount)}</dd></div><div><dt>Deadline</dt><dd>${deadlineText(x)}</dd></div><div><dt>Your fit</dt><dd>${met} of ${total} requirements met</dd></div></dl>
-    ${verdict(x)}${how}${pick}</article>`;
+  const how = `<details class="how"><summary>How it works</summary><div class="how-grid">
+    ${reqs?`<div><h4>Requirements, checked against your answers</h4><ul class="ticks">${reqs}</ul></div>`:''}
+    <div>${g.covers?.length?`<h4>What it pays for</h4><ul class="plain">${g.covers.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>`:''}
+    ${g.paid?`<h4>How you get paid</h4><p class="paid">${esc(g.paid)}</p>`:''}</div>
+    ${g.obligations?.length?`<div><h4>What you commit to</h4><ul class="plain">${g.obligations.map(o=>`<li>${esc(o)}</li>`).join('')}</ul></div>`:''}
+    ${applyDocs.length||afterDocs.length?`<div>${applyDocs.length?`<h4>Documents to apply</h4><ul class="plain">${applyDocs.map(docLi).join('')}</ul>`:''}
+    ${afterDocs.length?`<h4>After approval</h4><ul class="plain">${afterDocs.map(docLi).join('')}</ul>`:''}</div>`:''}
+    ${g.steps?.length?`<div class="span"><h4>Steps</h4><ol class="steps">${g.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol></div>`:''}
+    <p class="meta span">${g.verified_at?`<span class="verified">✓ Checked ${fmt(D(g.verified_at))}</span>`:'<span>Not yet verified by us.</span>'}${g.official_ref?`<span>${esc(g.official_ref)}</span>`:''}<a href="${esc(g.source_url)}" target="_blank" rel="noopener">Official page ↗</a>${g.verification_note?`<span>${esc(g.verification_note)}</span>`:''}</p>
+  </div></details>`;
+  const pick = open && g.selectable ? `<label class="pick"><input type="checkbox" data-pick="${esc(g.id)}" ${S.selected.has(g.id)?'checked':''}><span class="switch" aria-hidden="true"></span><span class="lbl"><span class="off">Add to my applications</span><span class="on">Added to my applications</span></span><small>Done-for-you fee if awarded: ${eur(feeFor(x))} + IVA</small></label>` : '';
+  const a=amountParts(x), d=deadlineParts(x);
+  const dots = r.conds.map(c=>`<i class="${c.state}" title="${esc(c.label)}"></i>`).join('');
+  return `<article class="gcard s-${status} t-${status} cat-${cat}" id="g-${esc(g.id)}" style="--i:${i};view-transition-name:g-${esc(g.id)}">
+    <div class="gc-body">
+      <div class="gc-top">${catIcon(cat)}<div class="gc-title">
+        <div class="gc-meta"><span class="pill"><i></i>${STAMP[status]}</span><p class="eyebrow">${esc(CAT_LABEL[cat]||'')} · ${esc(g.body)}</p></div>
+        <h3>${esc(g.name)}</h3></div></div>
+      ${g.summary?`<p class="summary">${esc(g.summary)}</p>`:''}
+      <dl class="stats">
+        <div class="stat amount"><dt class="k">Amount</dt><dd class="v${a.long?' long':''}">${esc(a.v)}</dd>${a.sub?`<dd class="sub">${esc(a.sub)}</dd>`:''}</div>
+        <div class="stat"><dt class="k">Deadline</dt><dd class="v">${esc(d.v)}</dd>${d.sub?`<dd class="sub ${d.cls||''}">${esc(d.sub)}</dd>`:''}</div>
+        <div class="stat"><dt class="k">Your fit</dt>${total?`<dd class="dots" aria-hidden="true">${dots}</dd><dd class="sub">${met} of ${total} requirements met</dd>`:`<dd class="sub">Nothing to check</dd>`}</div>
+      </dl>
+      ${verdict(x)}
+    </div>${how}${pick}</article>`;
+}
+function selectedSummary(){
+  const sel = evaluateAll().filter(x=>S.selected.has(x.g.id)), n=sel.length, sum=sel.reduce((a,x)=>a+(x.r.max||0),0);
+  return {n, title: n ? `${n} grant${n===1?'':'s'} selected` : 'No grants selected yet',
+    sub: n ? (sum?`Worth up to ${eur(sum)} in total. You choose how to apply next.`:'You choose how to apply next.') : 'Switch on “Add to my applications” on the grants you want.'};
+}
+function updateApplyBar(){
+  const s=selectedSummary(), b=app.querySelector('[data-go="5"]'), t=app.querySelector('#ab-title'), u=app.querySelector('#ab-sub');
+  if (b){ b.disabled=!s.n; b.textContent=`Apply for ${s.n||'selected'} grant${s.n===1?'':'s'}`; }
+  if (t) t.textContent=s.title; if (u) u.textContent=s.sub;
 }
 function vResults(){
   const all=evaluateAll();
   const inFilter = x => S.filter==='all' || CATS[x.g.category]===S.filter;
   const list=all.filter(inFilter), by=s=>list.filter(x=>x.status===s);
   const openAll=all.filter(x=>(x.status==='yes'||x.status==='check')&&x.g.selectable);
-  const sum=openAll.reduce((a,x)=>a+(x.r.max||0),0), nextAll=all.filter(x=>x.status==='next').length;
+  const sum=openAll.reduce((a,x)=>a+(x.r.max||0),0);
+  const tally={}; for (const x of all) tally[x.status]=(tally[x.status]||0)+1;
   const counts={}; for (const x of all) if (x.status!=='no'){ counts.all=(counts.all||0)+1; const c=CATS[x.g.category]; counts[c]=(counts[c]||0)+1; }
-  let i=0; const block=(l,title,sub)=>l.length?`<section class="group"><h3>${title}</h3>${sub?`<p>${sub}</p>`:''}${l.map(x=>card(x,i++)).join('')}</section>`:'';
-  const head = openAll.length ? `${openAll.length} open now${sum?`, worth up to ${eur(sum)}`:''}.${nextAll?` ${nextAll} more to watch for.`:''}` : `Nothing open right now that fits.${nextAll?` ${nextAll} to watch for.`:''}`;
+  const order=[['yes','Eligible'],['check','Confirm first'],['active','Already yours'],['next','Next call'],['no','Not a match']].filter(([k])=>tally[k]);
+  const meter = order.map(([k,l])=>`<i class="seg-${k}" style="--n:${tally[k]}" title="${l}: ${tally[k]}"></i>`).join('');
+  const legend = order.map(([k,l])=>`<li class="seg-${k}"><i></i>${l} <b>${tally[k]}</b></li>`).join('');
+  const overview = `<section class="overview" aria-label="Summary">
+    <div><p class="ov-k">${openAll.length?(sum?'Open to you now, worth up to':'Open to you now'):'Open to you now'}</p>
+      <p class="ov-big">${openAll.length?(sum?eur(sum):openAll.length):'0'}</p>
+      <p class="ov-sub">${openAll.length?`${sum?'Across ':''}${openAll.length} grant${openAll.length===1?'':'s'} you can apply for today.`:'Nothing open right now fits. The grants to watch for are below.'}</p></div>
+    <div><p class="ov-k">All ${all.length} grants we’ve verified, checked against your answers</p>
+      <div class="meter" aria-hidden="true">${meter}</div><ul class="legend">${legend}</ul></div></section>`;
+  const soonest = openAll.map(x=>({x,dl:deadlineOf(x)})).filter(o=>o.dl&&daysTo(o.dl)>=0&&daysTo(o.dl)<=14).sort((a,b)=>a.dl-b.dl)[0];
+  const soon = soonest ? (()=>{ const n=daysTo(soonest.dl); return `<div class="soon" role="note"><span class="pulse" aria-hidden="true"></span><p><b>${n===0?'Closes today':`Closes in ${n} day${n===1?'':'s'}`}</b>: ${esc(soonest.x.g.name)}.</p><a href="#g-${esc(soonest.x.g.id)}">See the grant ↓</a></div>`; })() : '';
+  let i=0; const block=(s,title,sub)=>{ const l=by(s); return l.length?`<section class="group t-${s}"><header class="group-head"><h3>${title}</h3><span class="count">${l.length}</span></header>${sub?`<p>${sub}</p>`:''}<div class="cards">${l.map(x=>card(x,i++)).join('')}</div></section>`:''; };
   const chips = FILTERS.map(([k,l])=>`<button class="chip ${S.filter===k?'on':''}" data-filter="${k}" aria-pressed="${S.filter===k}">${l}<b>${counts[k]||0}</b></button>`).join('');
-  const body = `${block(by('yes'),'Apply now','You meet every requirement we can check.')}
-  ${block(by('check'),'Open now: confirm first','The items marked ? decide it. We check them with you before applying.')}
-  ${block(by('active'),'Already yours','')}
-  ${block(by('next'),'Watch for the next call','Closed or not open yet, but you fit what we know so far.')}`;
-  return `${progress()}<h2>Grants for ${S.p.name?esc(S.p.name):'your business'}</h2><p class="headline-sum">${head}</p>
+  const body = `${block('yes','Apply now','You meet every requirement we can check.')}
+  ${block('check','Open now: confirm first','The items marked ? decide it. We check them with you before applying.')}
+  ${block('active','Already yours','You already have these, or they apply automatically.')}
+  ${block('next','Watch for the next call','Closed or not open yet, but you fit what we know so far.')}`;
+  const no=by('no'), s=selectedSummary();
+  return `<div class="results">${progress()}<h2>Grants for ${S.p.name?esc(S.p.name):'your business'}</h2>
+  ${overview}${soon}
   <div class="filters" role="toolbar" aria-label="Filter grants">${chips}</div>
   <div class="${S.animate?'results-in':''}">${body.trim()?body:`<p class="empty">No grants in this category fit right now.</p>`}</div>
-  ${by('no').length?`<details class="group nomatch"><summary>Not a match (${by('no').length})</summary>${by('no').map(x=>card(x,0)).join('')}</details>`:''}
-  <div class="actions"><button class="primary" data-go="5" ${S.selected.size?'':'disabled'}>Apply for ${S.selected.size||'selected'} grant${S.selected.size===1?'':'s'}</button><button class="ghost" data-go="3">Change answers</button></div>`;
+  ${no.length?`<details class="nomatch"><summary>Not a match <span class="count t-no">${no.length}</span></summary><div class="cards">${no.map(x=>card(x,0)).join('')}</div></details>`:''}
+  <div class="applybar" role="region" aria-label="Your applications"><div class="ab-info"><b id="ab-title">${s.title}</b><small id="ab-sub">${s.sub}</small></div>
+    <button class="ghost small" data-go="3">Change answers</button>
+    <button class="primary" data-go="5" ${s.n?'':'disabled'}>Apply for ${s.n||'selected'} grant${s.n===1?'':'s'}</button></div></div>`;
 }
 
 /* ---------- Views: apply ---------- */
@@ -795,7 +994,7 @@ async function doSend(){
 app.addEventListener('click', e=>{
   const t=e.target.closest('button'); if(!t) return;
   if (t.dataset.go) return go(Number(t.dataset.go));
-  if (t.dataset.filter){ S.filter=t.dataset.filter; return rerenderKeepScroll(); }
+  if (t.dataset.filter){ S.filter=t.dataset.filter; const run=()=>rerenderKeepScroll(); return (document.startViewTransition && !matchMedia('(prefers-reduced-motion: reduce)').matches) ? document.startViewTransition(run) : run(); }
   if (t.dataset.tier){ S.tier=t.dataset.tier; S.err=''; return rerenderKeepScroll(); }
   if (t.dataset.tpl) return downloadTemplate(t.dataset.tpl);
   if (t.dataset.rm){ const [d,i]=t.dataset.rm.split(':'); S.docFiles[d].splice(+i,1); if(!S.docFiles[d].length) delete S.docFiles[d]; return rerenderKeepScroll(); }
@@ -816,7 +1015,7 @@ app.addEventListener('input', e=>{
 });
 app.addEventListener('change', e=>{
   const t=e.target;
-  if (t.dataset.pick){ t.checked?S.selected.add(t.dataset.pick):S.selected.delete(t.dataset.pick); const b=app.querySelector('[data-go="5"]'); if(b){ const n=S.selected.size; b.disabled=!n; b.textContent=`Apply for ${n||'selected'} grant${n===1?'':'s'}`; } return; }
+  if (t.dataset.pick){ t.checked?S.selected.add(t.dataset.pick):S.selected.delete(t.dataset.pick); updateApplyBar(); return; }
   if (t.dataset.agree){ S.agree[t.dataset.agree]=t.checked; const b=app.querySelector('[data-act="send"]'); if(b) b.disabled=!ready(); return; }
   if (t.dataset.doc){
     const ok=[], bad=[];
