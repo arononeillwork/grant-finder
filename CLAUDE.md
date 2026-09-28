@@ -212,3 +212,10 @@ select * from admin.grants_verification;      -- what's shown/hidden and when it
 select admin.mark_paid('SOL-XXXX','equipos-hosteleria', 8000);  -- manual fallback to the email buttons
 select admin.charge_now('SOL-XXXX','grant-id');                -- charge on the awarded amount if the client won't confirm
 ```
+
+## 15. Deployment status (28 Sep 2026)
+
+- **GitHub:** `arononeillwork/grant-finder`. `main` is the production branch. The repo's default branch is still `claude/fervent-noether-xtd4kl` until the owner switches it to `main` in GitHub settings.
+- **Vercel:** project `solicita` (https://solicita-arononeillworks-projects.vercel.app, https://solicita-two.vercel.app), Root Directory set to `site`. Production is still the manual upload from 24 Sep (older code, old backend) until the first Git deployment. Git connection: done by the owner in the dashboard (Settings → Git → Connect Git Repository), since no API tool can link an existing project.
+- **Automatic Git deployments are paused** by `"git": { "deploymentEnabled": false }` in `site/vercel.json`, because `site/config.js` still has placeholder values and a deploy would replace the live site with one that can't load grants. The go-live commit must fill in `site/config.js` **and** remove that line.
+- **Supabase:** new project **"Solicita Grant Finder"** in arononeill's org (eu-west-3), not created yet (the connector's `create_project` timed out, so create it in the dashboard). Then apply migrations 0001–0005, deploy the functions and set the secrets (§9).
