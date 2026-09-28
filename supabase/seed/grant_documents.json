@@ -1,0 +1,956 @@
+[
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "cert_digital",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "memoria_equipos",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "energy_saving",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "equipment_quote",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "cnae_proof",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "cert_censal",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": "Proves you are in the Hacienda census of businesses.",
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "id_doc",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "escrituras",
+"required": true,
+"applies_to": "company",
+"tier": "all",
+"note": "Proves the signer can act for the company.",
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "cert_aeat",
+"required": false,
+"applies_to": "all",
+"tier": "all",
+"note": "The Ministry can usually check this itself. Upload it to be safe.",
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "cert_ss",
+"required": false,
+"applies_to": "all",
+"tier": "all",
+"note": "The Ministry can usually check this itself. Upload it to be safe.",
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "bank_cert",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "rep_auth",
+"required": true,
+"applies_to": "all",
+"tier": "dfy",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "invoices_payments",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": "Within 15 days of finishing the installation.",
+"official_url": null
+},
+{
+"grant_id": "equipos-hosteleria",
+"doc_id": "waste_cert",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "cuota-cero",
+"doc_id": "cert_digital",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "cuota-cero",
+"doc_id": "bank_cert",
+"required": false,
+"applies_to": "all",
+"tier": "all",
+"note": "Only the IBAN goes in the form. Useful to have in case they ask.",
+"official_url": null
+},
+{
+"grant_id": "cuota-cero",
+"doc_id": "rep_auth",
+"required": true,
+"applies_to": "all",
+"tier": "dfy",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "linea-2",
+"doc_id": "cert_digital",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "linea-2",
+"doc_id": "viability_plan",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "linea-2",
+"doc_id": "reta_alta",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "linea-2",
+"doc_id": "id_doc",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "linea-2",
+"doc_id": "bank_cert",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "linea-2",
+"doc_id": "rep_auth",
+"required": true,
+"applies_to": "all",
+"tier": "dfy",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "kit-digital",
+"doc_id": "cert_digital",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "kit-digital",
+"doc_id": "kit_test",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "kit-digital",
+"doc_id": "cert_censal",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "kit-digital",
+"doc_id": "cert_aeat",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "kit-digital",
+"doc_id": "cert_ss",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "kit-digital",
+"doc_id": "escrituras",
+"required": true,
+"applies_to": "company",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "kit-digital",
+"doc_id": "kit_annex2",
+"required": true,
+"applies_to": "all",
+"tier": "dfy",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-joven",
+"doc_id": "cert_digital",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-joven",
+"doc_id": "camara_anexos",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": "https://camaramalaga.com/sistema-de-garantia-juvenil-pice-programa-integral-de-cualificacion-y-empleo/convocatoria-ayudas-a-la-contratacion-2026/"
+},
+{
+"grant_id": "talento-joven",
+"doc_id": "contract",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-joven",
+"doc_id": "worker_joven",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-joven",
+"doc_id": "cert_censal",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-joven",
+"doc_id": "cert_aeat",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-joven",
+"doc_id": "cert_ss",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-joven",
+"doc_id": "rep_auth",
+"required": true,
+"applies_to": "all",
+"tier": "dfy",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-joven",
+"doc_id": "payroll_proof",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-45",
+"doc_id": "cert_digital",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-45",
+"doc_id": "camara_anexos",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": "https://camaramalaga.com/sistema-de-garantia-juvenil-pice-programa-integral-de-cualificacion-y-empleo/convocatoria-ayudas-a-la-contratacion-talento-45-2026/"
+},
+{
+"grant_id": "talento-45",
+"doc_id": "contract",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-45",
+"doc_id": "worker_45",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-45",
+"doc_id": "cert_censal",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-45",
+"doc_id": "cert_aeat",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-45",
+"doc_id": "cert_ss",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-45",
+"doc_id": "rep_auth",
+"required": true,
+"applies_to": "all",
+"tier": "dfy",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "talento-45",
+"doc_id": "payroll_proof",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "inea-empresas",
+"doc_id": "cert_digital",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "inea-empresas",
+"doc_id": "memoria_proyecto",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "inea-empresas",
+"doc_id": "quotes",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": "From an approved collaborating installer.",
+"official_url": null
+},
+{
+"grant_id": "inea-empresas",
+"doc_id": "energy_cert_before",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "inea-empresas",
+"doc_id": "cert_censal",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "inea-empresas",
+"doc_id": "cert_aeat",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "inea-empresas",
+"doc_id": "cert_ss",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "inea-empresas",
+"doc_id": "invoices_payments",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pymetur",
+"doc_id": "rta_cert",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pymetur",
+"doc_id": "memoria_proyecto",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pymetur",
+"doc_id": "quotes",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pymetur",
+"doc_id": "cert_censal",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pymetur",
+"doc_id": "cert_aeat",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pymetur",
+"doc_id": "cert_ss",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pymetur",
+"doc_id": "minimis_decl",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pymetur",
+"doc_id": "id_doc",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pymetur",
+"doc_id": "escrituras",
+"required": true,
+"applies_to": "company",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pymetur",
+"doc_id": "invoices_payments",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-innova",
+"doc_id": "pyme_decl",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-innova",
+"doc_id": "cert_censal",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-innova",
+"doc_id": "turnover_proof",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-innova",
+"doc_id": "cert_aeat",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-innova",
+"doc_id": "cert_ss",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-innova",
+"doc_id": "minimis_decl",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-innova",
+"doc_id": "id_doc",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-innova",
+"doc_id": "invoices_payments",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-digital",
+"doc_id": "pyme_decl",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-digital",
+"doc_id": "cert_censal",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-digital",
+"doc_id": "turnover_proof",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-digital",
+"doc_id": "cert_aeat",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-digital",
+"doc_id": "cert_ss",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-digital",
+"doc_id": "minimis_decl",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-digital",
+"doc_id": "id_doc",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-digital",
+"doc_id": "invoices_payments",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-sostenible",
+"doc_id": "pyme_decl",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-sostenible",
+"doc_id": "cert_censal",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-sostenible",
+"doc_id": "turnover_proof",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-sostenible",
+"doc_id": "cert_aeat",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-sostenible",
+"doc_id": "cert_ss",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-sostenible",
+"doc_id": "minimis_decl",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-sostenible",
+"doc_id": "id_doc",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pyme-sostenible",
+"doc_id": "invoices_payments",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "innovactiva",
+"doc_id": "id_doc",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "innovactiva",
+"doc_id": "padron",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "innovactiva",
+"doc_id": "qualification",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "innovactiva",
+"doc_id": "viability_plan",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": "Use it as your business plan, with the investment budget.",
+"official_url": null
+},
+{
+"grant_id": "innovactiva",
+"doc_id": "quotes",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": "For the equipment, fit-out or software you’ll buy.",
+"official_url": null
+},
+{
+"grant_id": "innovactiva",
+"doc_id": "cert_aeat",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "innovactiva",
+"doc_id": "cert_ss",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "innovactiva",
+"doc_id": "invoices_payments",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "diputacion-6000",
+"doc_id": "id_doc",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "diputacion-6000",
+"doc_id": "reta_alta",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "diputacion-6000",
+"doc_id": "padron",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "diputacion-6000",
+"doc_id": "cert_aeat",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "diputacion-6000",
+"doc_id": "cert_ss",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "diputacion-6000",
+"doc_id": "bank_cert",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pago-unico",
+"doc_id": "id_doc",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": null,
+"official_url": null
+},
+{
+"grant_id": "pago-unico",
+"doc_id": "viability_plan",
+"required": true,
+"applies_to": "all",
+"tier": "all",
+"note": "Describes the business you’ll start.",
+"official_url": null
+}
+]

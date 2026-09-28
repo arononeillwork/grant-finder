@@ -1,0 +1,856 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light">
+<title>Solicita: find the grants your business can get</title>
+<meta name="description" content="Enter your NIF or CIF and see which Spanish grants your business qualifies for, with every document you need to apply.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📑</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light;
+  --display:'Bricolage Grotesque','Avenir Next','Segoe UI',system-ui,sans-serif;
+  --text:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;
+  --bg:#F6F8FB;--surface:#FFFFFF;--ink:#17222E;--muted:#5A6876;--line:#E0E6EC;--line-strong:#C9D3DC;
+  --blue:#2457C5;--blue-ink:#1B4396;--blue-soft:#EAF1FD;
+  --ok:#1D7A46;--ok-soft:#E6F4EC;--warn:#9C5A06;--warn-soft:#FDF3E1;--no:#B0352D;--no-soft:#FBEAE8;--next:#5A49B4;--next-soft:#EFEDFA;--active:#23707C;--active-soft:#E4F3F5;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--text);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:var(--blue)}
+.wrap{max-width:800px;margin:0 auto;padding:1.25rem 1.25rem 4rem}
+.top{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding:.4rem 0 1.1rem;border-bottom:1px solid var(--line);margin-bottom:2rem}
+.logo{font-family:var(--display);font-weight:800;font-size:1.3rem;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.logo span{color:var(--blue)}
+.pilot{color:var(--muted);font-size:.88rem;text-align:right}
+h1{font-family:var(--display);font-weight:800;font-size:clamp(2.1rem,6vw,3.3rem);line-height:1.02;letter-spacing:-.03em;margin:0 0 1rem;max-width:17ch}
+h2{font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,4vw,1.95rem);letter-spacing:-.02em;line-height:1.1;margin:0 0 .5rem}
+h3{font-family:var(--display);font-weight:600;font-size:1.2rem;line-height:1.25;margin:0}
+h4{font-size:.8rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:1.3rem 0 .45rem}
+.lede{color:var(--muted);max-width:60ch;margin:0 0 1.75rem}
+.progress{display:flex;gap:.3rem;margin-bottom:.5rem}
+.progress i{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.progress i.on{background:var(--blue)}
+.stepcount{font-size:.88rem;color:var(--muted);margin-bottom:1.6rem}
+.nif{display:flex;gap:.6rem;flex-wrap:wrap}
+.nif input{flex:1 1 260px;min-width:0;font-family:var(--display);font-weight:800;font-size:clamp(1.5rem,5vw,2rem);letter-spacing:.09em;text-transform:uppercase;padding:.65rem 1rem;border:2px solid var(--ink);border-radius:10px;background:var(--surface);color:var(--ink)}
+.nif input::placeholder{color:var(--line-strong)}
+input:focus-visible,select:focus-visible,button:focus-visible,summary:focus-visible,a:focus-visible,label.upbtn:focus-within{outline:3px solid var(--blue);outline-offset:2px}
+button{font:inherit;cursor:pointer}
+.primary{background:var(--blue);color:#fff;border:0;border-radius:10px;padding:.8rem 1.3rem;font-weight:700}
+.primary:hover{background:var(--blue-ink)}
+.primary:disabled{opacity:.45;cursor:not-allowed}
+.ghost{background:var(--surface);border:1px solid var(--line-strong);color:var(--ink);border-radius:10px;padding:.8rem 1.2rem}
+.small{padding:.45rem .8rem;font-size:.9rem;border-radius:8px}
+.linkbtn{background:none;border:0;padding:0;color:var(--blue);text-decoration:underline;text-underline-offset:3px}
+.msg{margin:.7rem 0 0;font-size:.95rem;min-height:1.4em}
+.msg.err{color:var(--no)}
+.note{background:var(--blue-soft);border-radius:10px;padding:.85rem 1rem;font-size:.94rem;margin:1.2rem 0}
+.note.warn{background:var(--warn-soft)}
+.company{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--ok);border-radius:10px;padding:1rem 1.1rem;margin:1.2rem 0}
+.company dl{display:grid;grid-template-columns:max-content 1fr;gap:.25rem 1rem;margin:.6rem 0 0;font-size:.94rem}
+.company dt{color:var(--muted)}.company dd{margin:0}
+.src{font-size:.8rem;color:var(--ok);font-weight:700;margin-left:.35rem}
+.field{margin:1.6rem 0}
+.q{display:block;font-weight:700;margin-bottom:.1rem}
+.hint{color:var(--muted);font-size:.9rem;margin:0 0 .55rem}
+input[type=text],input[type=number],input[type=email],input[type=tel],select{font:inherit;padding:.6rem .75rem;border:1px solid var(--line-strong);border-radius:8px;background:var(--surface);color:var(--ink);width:100%;max-width:420px}
+.row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.55rem}.row select{width:auto}
+.seg{display:flex;flex-wrap:wrap;gap:.4rem}
+.seg label{position:relative}
+.seg input{position:absolute;opacity:0;width:1px;height:1px}
+.seg span{display:inline-block;padding:.45rem .9rem;border:1px solid var(--line-strong);border-radius:999px;background:var(--surface);font-size:.95rem;cursor:pointer}
+.seg input:checked+span{background:var(--blue);border-color:var(--blue);color:#fff}
+.seg input:focus-visible+span{outline:3px solid var(--blue);outline-offset:2px}
+.actions{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-top:2.2rem}
+/* results */
+.headline-sum{font-size:1.1rem;margin:0 0 1rem}
+.filters{display:flex;gap:.45rem;flex-wrap:wrap;margin:1.2rem 0 .5rem}
+.chip{border:1px solid var(--line-strong);background:var(--surface);color:var(--ink);border-radius:999px;padding:.42rem .85rem;font-size:.92rem}
+.chip b{font-weight:700;color:var(--muted);margin-left:.3rem}
+.chip.on{background:var(--ink);border-color:var(--ink);color:#fff}.chip.on b{color:#C9D3DC}
+.group{margin-top:2.2rem}
+.group>h3{font-size:1.05rem;margin-bottom:.15rem}
+.group>p{color:var(--muted);font-size:.93rem;margin:0 0 .9rem}
+.grant{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:1.15rem 1.25rem 1rem;margin-bottom:1rem;box-shadow:0 1px 2px rgba(23,34,46,.04)}
+.grant.s-yes{border-left:4px solid var(--ok)}.grant.s-check{border-left:4px solid var(--warn)}.grant.s-next{border-left:4px solid var(--next)}.grant.s-active{border-left:4px solid var(--active)}.grant.s-no{border-left:4px solid var(--line-strong)}
+.grant-head{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem}
+.eyebrow{margin:0 0 .2rem;font-size:.82rem;color:var(--muted)}
+.summary{margin:.55rem 0 0;color:var(--ink)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.6rem;margin:.9rem 0 0;padding:0}
+.facts div{background:var(--bg);border-radius:10px;padding:.55rem .75rem}
+.facts dt{font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.facts dd{margin:.1rem 0 0;font-weight:700;font-size:.97rem}
+.urgent{color:var(--no)}
+.verdict{margin:.8rem 0 0;padding:.55rem .75rem;border-radius:10px;font-size:.94rem}
+.verdict.yes,.verdict.active{background:var(--ok-soft);color:#155D35}.verdict.check{background:var(--warn-soft);color:#774504}.verdict.no{background:var(--no-soft);color:#8A2922}.verdict.next{background:var(--next-soft);color:#44368C}
+.how{margin-top:.8rem;border-top:1px solid var(--line);padding-top:.6rem}
+.how>summary{cursor:pointer;color:var(--blue);font-weight:700;list-style:none;display:flex;align-items:center;gap:.4rem}
+.how>summary::-webkit-details-marker{display:none}
+.how>summary::before{content:'+';display:inline-grid;place-items:center;width:1.2rem;height:1.2rem;border:1.5px solid currentColor;border-radius:50%;font-size:.85rem;line-height:1}
+.how[open]>summary::before{content:'–'}
+.ticks{list-style:none;margin:0;padding:0}
+.ticks li{display:grid;grid-template-columns:1.5rem 1fr;gap:.4rem;margin:.35rem 0;font-size:.95rem}
+.ic{display:inline-grid;place-items:center;width:1.25rem;height:1.25rem;border-radius:50%;font-size:.75rem;font-weight:700;margin-top:.15rem}
+.ic.pass{background:var(--ok-soft);color:var(--ok)}.ic.fail{background:var(--no-soft);color:var(--no)}.ic.unknown{background:var(--warn-soft);color:var(--warn)}.ic.dot{background:var(--bg);color:var(--muted)}
+.ticks small{display:block;color:var(--muted);font-size:.87rem}
+.plain{margin:0;padding-left:1.2rem;font-size:.95rem}.plain li{margin:.25rem 0}
+.tag{display:inline-block;font-size:.75rem;font-weight:700;background:var(--blue-soft);color:var(--blue-ink);border-radius:6px;padding:.05rem .4rem;margin-left:.35rem;vertical-align:1px}
+.meta{font-size:.86rem;color:var(--muted);margin-top:1rem}
+.pick{display:flex;align-items:center;gap:.55rem;margin-top:.9rem;padding-top:.8rem;border-top:1px solid var(--line);font-weight:700}
+.pick input{width:1.15rem;height:1.15rem;accent-color:var(--blue)}
+.pick small{font-weight:400;color:var(--muted);margin-left:auto;text-align:right}
+.stamp{flex:none;font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:.07em;font-size:.72rem;line-height:1;padding:.42rem .6rem;border:2.5px solid currentColor;border-radius:6px;box-shadow:inset 0 0 0 2px var(--surface),inset 0 0 0 3.5px currentColor;transform:rotate(-5deg);white-space:nowrap;margin-top:.15rem;background:var(--surface)}
+.stamp.yes{color:var(--ok)}.stamp.check{color:var(--warn)}.stamp.next{color:var(--next)}.stamp.no{color:var(--no)}.stamp.active{color:var(--active)}
+@keyframes thunk{0%{opacity:0;transform:rotate(-5deg) scale(1.9)}65%{opacity:1;transform:rotate(-5deg) scale(.93)}100%{opacity:1;transform:rotate(-5deg) scale(1)}}
+.results-in .stamp{animation:thunk .42s cubic-bezier(.2,.8,.3,1.15) both;animation-delay:calc(var(--i,0)*70ms)}
+@media (prefers-reduced-motion:reduce){.results-in .stamp{animation:none}}
+.nomatch>summary{font-family:var(--display);font-weight:600;font-size:1.05rem;cursor:pointer;margin-bottom:.8rem}
+.empty{color:var(--muted);padding:1rem 0}
+/* apply */
+.recap{margin:.6rem 0 0;padding-left:1.2rem}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:.9rem;margin-top:1.4rem}
+.tier{text-align:left;background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:1.1rem 1.15rem;color:var(--ink)}
+.tier.on{border-color:var(--blue);background:var(--blue-soft)}
+.tier b{display:block;font-family:var(--display);font-size:1.15rem;margin-bottom:.15rem}
+.tier .price{display:block;font-weight:700;color:var(--blue);margin-bottom:.5rem}
+.tier span.d{display:block;color:var(--muted);font-size:.92rem}
+.docsec{margin-top:2rem}
+.docsec>h3{margin-bottom:.2rem}.docsec>p{color:var(--muted);font-size:.93rem;margin:0 0 .8rem}
+.docprogress{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin:.4rem 0 .3rem}
+.docprogress i{display:block;height:100%;background:var(--ok);border-radius:4px}
+.doc{display:grid;grid-template-columns:1.6rem 1fr;gap:.6rem;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:.9rem 1rem;margin-bottom:.6rem}
+.doc.done{border-color:#B7DCC6;background:#FBFEFC}
+.doc .state{display:inline-grid;place-items:center;width:1.5rem;height:1.5rem;border-radius:50%;border:2px solid var(--line-strong);font-size:.8rem;font-weight:700;color:#fff;margin-top:.1rem}
+.doc.done .state{background:var(--ok);border-color:var(--ok)}
+.doc b{font-size:1rem}
+.req{font-size:.75rem;font-weight:700;border-radius:6px;padding:.05rem .4rem;margin-left:.3rem;vertical-align:1px}
+.req.r{background:var(--no-soft);color:var(--no)}.req.o{background:var(--bg);color:var(--muted)}
+.doc .how-get{margin:.25rem 0 0;color:var(--muted);font-size:.9rem}
+.doc .for{margin:.3rem 0 0;font-size:.85rem;color:var(--muted)}
+.doc .note-line{margin:.3rem 0 0;font-size:.87rem;color:var(--warn)}
+.doc-actions{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin-top:.65rem}
+label.upbtn{display:inline-flex;align-items:center;gap:.35rem;background:var(--blue);color:#fff;border-radius:8px;padding:.45rem .85rem;font-size:.9rem;font-weight:700;cursor:pointer}
+label.upbtn input{position:absolute;opacity:0;width:1px;height:1px}
+.tpl{background:var(--surface);border:1px solid var(--blue);color:var(--blue);border-radius:8px;padding:.42rem .8rem;font-size:.9rem;font-weight:700}
+.ext{font-size:.9rem}
+.filelist{list-style:none;margin:.5rem 0 0;padding:0}
+.filelist li{display:flex;justify-content:space-between;gap:.5rem;font-size:.88rem;background:var(--bg);border-radius:6px;padding:.3rem .55rem;margin-top:.3rem}
+.filelist button{background:none;border:0;color:var(--no);font-size:.85rem}
+.prep{display:flex;gap:.45rem;align-items:center;font-size:.9rem;margin-top:.5rem}
+.prep input,.have input{accent-color:var(--blue)}
+.have{display:flex;gap:.45rem;align-items:center;font-size:.9rem;margin-top:.6rem}
+.grantsteps{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:1rem 1.1rem;margin-bottom:.7rem}
+ol.steps{padding-left:1.3rem;margin:.4rem 0}ol.steps li{margin:.3rem 0}
+.check{display:flex;gap:.55rem;align-items:flex-start;margin:.7rem 0;font-size:.95rem}
+.check input{margin-top:.3rem;accent-color:var(--blue)}
+.ref{font-family:var(--display);font-weight:800;font-size:1.6rem;letter-spacing:.06em;margin:.2rem 0 1rem}
+.foot{margin-top:3.5rem;padding-top:1rem;border-top:1px solid var(--line);color:var(--muted);font-size:.84rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.loading{color:var(--muted)}
+.paybox{background:var(--blue-soft);border-radius:14px;padding:1.1rem 1.2rem}
+a.primary{display:inline-block;text-decoration:none}
+a.ghost{display:inline-block;text-decoration:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top"><a class="logo" href="/">Solicita<span>.</span></a><div class="pilot">Beta: Andalucía, Málaga province</div></header>
+  <main id="app" aria-live="polite"><p class="loading">Loading grants…</p></main>
+  <footer class="foot">Grant information is checked by hand against official sources; the official call always decides. Templates are guides: use the official model whenever the grant provides one. This is guidance, not legal or financial advice. Operated by Easy Beans Coffee. <a href="/privacy.html">Privacy</a>.</footer>
+</div>
+<script src="/config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+/* ---------- Config ---------- */
+const CONFIG = window.SOLICITA_CONFIG; // see /config.js
+const sb = window.supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
+
+/* ---------- Helpers ---------- */
+const TODAY = (() => { const t = new Date(); t.setHours(0,0,0,0); return t; })();
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmt = d => d.toLocaleDateString('en-GB', {day:'numeric', month:'short', year:'numeric'});
+const D = s => { const [y,m,d] = String(s).slice(0,10).split('-').map(Number); return new Date(y, m-1, d); };
+const addM = (y,m,n) => new Date(Number(y), Number(m)-1+n, 1);
+const daysTo = d => Math.round((d - TODAY) / 864e5);
+const eur = n => '€' + Math.round(n).toLocaleString('en-GB');
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const C = (label, state, note) => ({label, state, note});
+const yn = v => v === 'yes' ? 'pass' : v === 'no' ? 'fail' : 'unknown';
+const minD = (a,b) => a < b ? a : b;
+const inAndalucia = p => p.province == null ? 'unknown' : p.province === 'outside' ? 'fail' : 'pass';
+const inMalaga = p => p.province == null ? 'unknown' : p.province === 'malaga' ? 'pass' : 'fail';
+const altaKnown = p => p.alta === 'date' && p.altaY && p.altaM;
+const monthsTrading = p => p.startY && p.startM ? (TODAY.getFullYear()-p.startY)*12 + (TODAY.getMonth()+1-p.startM) : null;
+const ICON = {pass:'✓', fail:'✕', unknown:'?'};
+
+function checkNif(raw){
+  const v = raw.toUpperCase().replace(/[\s.\-]/g,''), L = 'TRWAGMYFPDXBNJZSQVHLCKE';
+  if (!v) return {ok:false, msg:'Enter a NIF, NIE or CIF.'};
+  if (/^\d{8}[A-Z]$/.test(v)) return L[parseInt(v.slice(0,8),10)%23]===v[8] ? {ok:true,v} : {ok:false,msg:'The letter doesn’t match the DNI number. Check for a typo.'};
+  if (/^[XYZ]\d{7}[A-Z]$/.test(v)) return L[parseInt('XYZ'.indexOf(v[0])+v.slice(1,8),10)%23]===v[8] ? {ok:true,v} : {ok:false,msg:'The letter doesn’t match the NIE number. Check for a typo.'};
+  if (/^[ABCDEFGHJNPQRSUVW]\d{7}[0-9A-J]$/.test(v)){
+    const d=v.slice(1,8); let s=0; for(let i=0;i<7;i++){const n=+d[i]; if(i%2===0){const x=n*2; s+=Math.floor(x/10)+x%10;} else s+=n;}
+    const c=(10-s%10)%10; return (v[8]===String(c)||v[8]==='JABCDEFGHI'[c]) ? {ok:true,v} : {ok:false,msg:'The control character doesn’t match this CIF. Check for a typo.'};
+  }
+  return {ok:false, msg:'That doesn’t look like a Spanish NIF, NIE or CIF. It should be 9 characters, like B12345678.'};
+}
+
+/* ---------- Eligibility rules (keyed by grants.rule_key) ---------- */
+const debtCond = p => C('Up to date with Hacienda and Social Security', p.debts==='no'?'pass':p.debts==='yes'?'fail':'unknown', p.debts==='yes'?'Debts block almost every grant. Clearing them (or a payment plan) can fix this.':null);
+const RULES = {
+  equipos_hosteleria(p){
+    return {conds:[
+      C('Bar, café, restaurant or accommodation', p.sector==='hospitality'?'pass':p.sector?'fail':'unknown'),
+      C('Replacing existing equipment with a more efficient model', yn(p.replaceEquip), p.replaceEquip==='no'?'Only replacements qualify, not new additions.':'Fridges, dishwashers, coffee or catering machines, AC units, awnings, terrace umbrellas. Not gas equipment.'),
+      debtCond(p)
+    ]};
+  },
+  cuota_cero(p, g){
+    const c=[]; let timing='open', whenNote=null, deadline=null;
+    if (altaKnown(p)) c.push(C('Registered as autónomo from January 2023 onwards', p.altaY>=2023?'pass':'fail'));
+    else if (p.alta==='notyet'){ c.push(C('Registered as autónomo from January 2023 onwards','pass')); timing='next'; whenNote='You apply after 12 months on the tarifa plana, which falls after this call closes. Watch for the next call.'; }
+    else c.push(C('Registered as autónomo from January 2023 onwards','unknown','Add your registration date to check.'));
+    c.push(C('On the tarifa plana (reduced €80 quota)', yn(p.tarifaPlana)));
+    c.push(C('Registered on the padrón in Andalucía', yn(p.empadronado)));
+    if (altaKnown(p) && p.altaY>=2023){
+      const ws=addM(p.altaY,p.altaM,12), we=addM(p.altaY,p.altaM,14), close=D(g.closes), lbl='Apply within 2 months of finishing 12 months on the tarifa plana';
+      if (we<TODAY) c.push(C(lbl,'fail',`Your window ended around ${fmt(we)}. A second year of tarifa plana may give a second window.`));
+      else if (ws>close){ timing='next'; whenNote=`Your window opens around ${fmt(ws)}, after this call closes. Watch for the next call.`; c.push(C(lbl,'pass',`Your window: ${fmt(ws)} to ${fmt(we)} (approximate).`)); }
+      else { deadline=minD(we,close); c.push(C(lbl,'pass', ws>TODAY?`Apply between ${fmt(ws)} and ${fmt(deadline)}.`:`Apply by ${fmt(deadline)}.`)); }
+    }
+    c.push(debtCond(p));
+    return {conds:c, timing, whenNote, deadline};
+  },
+  linea_2(p, g){
+    const c=[]; let deadline=null, lbl='Individual autónomo, not a company partner or director';
+    c.push(C(lbl, p.entity==='autonomo'?'pass':p.entity?'fail':'unknown', p.entity&&p.entity!=='autonomo'?'Partners and directors of SLs and other companies are excluded.':null));
+    c.push(C('On the tarifa plana (reduced €80 quota)', yn(p.tarifaPlana)));
+    c.push(C('Business based in Andalucía', inAndalucia(p)));
+    const tl='Apply within 2 months of registering as autónomo';
+    if (altaKnown(p)){ const we=addM(p.altaY,p.altaM,2); if (we<TODAY) c.push(C(tl,'fail',`Your window ended around ${fmt(we)}.`)); else { deadline=minD(we,D(g.closes)); c.push(C(tl,'pass',`Apply by ${fmt(deadline)}.`)); } }
+    else c.push(C(tl,'unknown', p.alta==='notyet'?'Register and apply before this call closes.':'Add your registration date to check.'));
+    c.push(C('Viability plan showing a profit every year','unknown','Required with the application. We write it in the done-for-you service.'));
+    c.push(debtCond(p));
+    const age=parseInt(p.age,10); let amount=null, max=5500;
+    if (age && (p.gender==='f'||p.gender==='m')){ const young=(p.gender==='f'&&age<35)||(p.gender==='m'&&age<30); max = p.town==='small'?(young?5500:5000):(young?5000:3800); amount=`${eur(max)}, one-off`; }
+    return {conds:c, deadline, amount, max};
+  },
+  kit_digital(p){
+    const c=[], mt=monthsTrading(p); let timing='open', whenNote=null;
+    if (mt==null) c.push(C('Trading for at least 6 months','unknown'));
+    else if (mt>=6) c.push(C('Trading for at least 6 months','pass'));
+    else { timing='next'; const d=addM(p.startY,p.startM,6); whenNote=`You qualify from ${fmt(d)}.`; c.push(C('Trading for at least 6 months','pass',`From ${fmt(d)}.`)); }
+    c.push(C('Hasn’t had a Kit Digital voucher before', p.kitBefore==='no'?'pass':p.kitBefore==='yes'?'fail':'unknown'));
+    c.push(debtCond(p));
+    c.push(C('Applications being accepted right now','unknown','Sources disagree. We confirm on Acelera Pyme before applying.'));
+    const e=parseInt(p.employees,10); let amount=null, max=6000;
+    if (!isNaN(e)){ if (e<3){ amount='€2,000 to €3,000 (sources differ)'; max=2000; } else if (e<10){ amount='Up to €6,000'; max=6000; } else if (e<50){ amount='Up to €12,000'; max=12000; } }
+    return {conds:c, timing, whenNote, amount, max};
+  },
+  talento_joven(p){
+    const c=[C('Business in Málaga province', inMalaga(p)), C('Hiring full-time for at least 6 months', yn(p.hiring), p.hiring==='no'?'Part-time contracts don’t qualify.':null)];
+    if (p.candidate==='youth') c.push(C('New hire is under 30 and in Garantía Juvenil','pass'), C('They finished Talento Joven orientation at the Cámara','unknown','We check this with the candidate.'));
+    else c.push(C('New hire is under 30 and in Garantía Juvenil', p.candidate==='unsure'?'unknown':'fail'));
+    c.push(debtCond(p)); return {conds:c};
+  },
+  talento_45(p){
+    const c=[C('Business in Málaga province', inMalaga(p)), C('Hiring full-time for at least 6 months', yn(p.hiring))];
+    if (p.candidate==='45plus') c.push(C('New hire is unemployed, aged 45 to 60','pass'), C('They’re a Talento 45+ participant','unknown','We check this with the candidate.'));
+    else c.push(C('New hire is unemployed, aged 45 to 60', p.candidate==='unsure'?'unknown':'fail'));
+    c.push(debtCond(p)); return {conds:c};
+  },
+  inea(p){
+    return {conds:[
+      C('Business in Andalucía', inAndalucia(p)),
+      C('Not an industrial business', p.sector==='industry'?'fail':p.sector?'pass':'unknown', p.sector==='industry'?'Industry uses the separate INCEA programme.':null),
+      C('An energy project of about €11,000 or more, not yet started', yn(p.energyProject), 'Solar panels, batteries, efficient climate systems, insulation. Apply before starting works.'),
+      debtCond(p)
+    ]};
+  },
+  pymetur(p){
+    return {conds:[
+      C('Hospitality or tourism business', p.sector==='hospitality'?'pass':p.sector?'fail':'unknown'),
+      C('Business in Andalucía', inAndalucia(p)),
+      C('Registered in the Registro de Turismo de Andalucía', p.rta==='yes'?'pass':'unknown', p.rta==='yes'?null:'Register now so you’re ready when the call opens.'),
+      C('A modernisation, accessibility or sustainability project not yet started','unknown'),
+      debtCond(p)
+    ]};
+  },
+  camara_pyme(p){
+    return {conds:[
+      C('Business in Málaga province', inMalaga(p)),
+      C('Registered in the IAE before 1 Jan 2024 (2026 rules)', p.startY ? (Number(p.startY)<2024?'pass':'fail') : 'unknown', p.startY && Number(p.startY)>=2024 ? 'The cut-off usually moves a year each call.' : null),
+      C('Turnover of €100,000 or more last year', yn(p.turnover)),
+      debtCond(p)
+    ]};
+  },
+  innovactiva(p){
+    const age=parseInt(p.age,10);
+    return {conds:[
+      C(p.entity==='sl'?'Every partner aged 18 to 35':'Aged 18 to 35', age?(age>=18&&age<=35?'pass':'fail'):'unknown'),
+      C('Andalusian or living in Andalucía', yn(p.empadronado)),
+      C('ESO or a higher official qualification', yn(p.education)),
+      C('Business started within the dates the call sets','unknown'),
+      debtCond(p)
+    ]};
+  },
+  diputacion_6000(p){
+    return {conds:[
+      C('Autónomo', p.entity==='autonomo'?'pass':p.entity==='sl'?'unknown':p.entity?'fail':'unknown', p.entity==='sl'?'Check whether SL owners (autónomo societario) qualify in the next call.':null),
+      C('Business in Málaga province', inMalaga(p)),
+      C('Town under 20,000 people', p.town==='small'||p.town==='mid'?'pass':p.town==='large'?'fail':'unknown', p.town==='large'?'Marbella, Málaga city, Estepona, Fuengirola and other large towns are excluded.':null),
+      debtCond(p)
+    ]};
+  },
+  fundae(p){
+    const e=parseInt(p.employees,10);
+    if (e>0) return {active:true, conds:[C('You have employees, so you already have this credit','pass')]};
+    return {conds:[C('Has employees', isNaN(e)?'unknown':'fail')]};
+  },
+  tarifa_plana(p){
+    if (p.tarifaPlana==='yes') return {active:true, conds:[C('You’re already on it','pass')]};
+    const c=[];
+    if (p.alta==='notyet') c.push(C('Request it when you register','pass'), C('Not registered as autónomo in the last 2 years','unknown'));
+    else c.push(C('Requested at registration', p.tarifaPlana==='no'?'fail':'unknown', p.tarifaPlana==='no'?'It has to be requested when you register.':null));
+    return {conds:c};
+  },
+  pago_unico(p){
+    const c=[C('Receiving contributory unemployment benefit (paro)', yn(p.unemployed))];
+    c.push(C('Apply before registering as autónomo', p.alta==='notyet'?'pass':altaKnown(p)?'fail':'unknown'));
+    return {conds:c};
+  }
+};
+
+
+/* ---------- State ---------- */
+let GRANTS = [], DOCS = {}, GDOCS = [];
+const blank = () => ({name:'',entity:null,province:null,town:'unsure',sector:null,employees:'',startY:'',startM:'',debts:'unsure',alta:'unsure',altaY:'',altaM:'',tarifaPlana:'unsure',empadronado:'unsure',age:'',gender:'na',education:'unsure',turnover:'unsure',hiring:'unsure',candidate:'unsure',unemployed:'unsure',replaceEquip:'unsure',rta:'unsure',energyProject:'unsure',kitBefore:'unsure'});
+const S = {step:1, nif:'', lookup:null, company:null, auto:{}, demo:false, p:blank(), selected:new Set(), filter:'all', tier:null, contact:{name:'',email:'',phone:''}, agree:{data:false,fee:false}, docFiles:{}, prepare:{}, have:{}, sent:null, busy:false, err:'', animate:false};
+const STEPS = ['Business number','Details','Questions','Your grants','Apply'];
+const app = document.getElementById('app');
+
+const CATS = {hiring:'staff',training:'staff',energy:'equipment',digital:'digital',innovation:'digital',autonomo:'startup',startup:'startup',modernisation:'premises'};
+const CAT_LABEL = {staff:'Staff & training',equipment:'Equipment & energy',digital:'Digital & innovation',startup:'Starting up & autónomos',premises:'Premises & tourism'};
+const FILTERS = [['all','All'],['staff','Staff & training'],['equipment','Equipment & energy'],['digital','Digital & innovation'],['startup','Starting up'],['premises','Premises & tourism']];
+
+function evaluate(g, p){
+  const r = (RULES[g.rule_key] || (()=>({conds:[]})))(p, g);
+  r.amount = r.amount || g.amount_text; r.max = r.max ?? Number(g.max_amount);
+  let status;
+  if (r.active) status='active';
+  else if (r.conds.some(c=>c.state==='fail')) status='no';
+  else if (g.window_state==='closed' || g.window_state==='upcoming' || r.timing==='next' || (g.window_state==='open' && g.closes && D(g.closes) < TODAY)) status='next';
+  else if (r.conds.some(c=>c.state==='unknown')) status='check';
+  else status='yes';
+  return {g, r, status};
+}
+const evaluateAll = () => GRANTS.map(g => evaluate(g, S.p));
+const STAMP = {yes:'Eligible', check:'Confirm first', next:'Next call', no:'Not eligible', active:'Yours'};
+const feeFor = x => Math.max(Math.round((x.r.max || 0) * CONFIG.commission), CONFIG.minFee);
+const isCompany = () => S.p.entity && S.p.entity !== 'autonomo';
+
+/* ---------- Documents ---------- */
+function docsFor(grantIds, tier){
+  const out = new Map();
+  for (const row of GDOCS){
+    if (!grantIds.includes(row.grant_id)) continue;
+    if (row.tier === 'dfy' && tier !== 'dfy') continue;
+    if (row.applies_to === 'company' && !isCompany()) continue;
+    if (row.applies_to === 'autonomo' && isCompany()) continue;
+    const doc = DOCS[row.doc_id]; if (!doc) continue;
+    const g = GRANTS.find(x=>x.id===row.grant_id);
+    const e = out.get(doc.id) || {doc, grants:[], required:false, notes:[], urls:[]};
+    e.grants.push(g.name); e.required = e.required || row.required;
+    if (row.note) e.notes.push(row.note);
+    const u = row.official_url || doc.official_url; if (u && !e.urls.includes(u)) e.urls.push(u);
+    out.set(doc.id, e);
+  }
+  return [...out.values()].sort((a,b)=>a.doc.sort_order-b.doc.sort_order);
+}
+const docsForGrant = g => GDOCS.filter(r=>r.grant_id===g.id && r.tier==='all' && !(r.applies_to==='company'&&!isCompany()) && !(r.applies_to==='autonomo'&&isCompany())).map(r=>({doc:DOCS[r.doc_id], row:r})).filter(x=>x.doc).sort((a,b)=>a.doc.sort_order-b.doc.sort_order);
+
+/* ---------- Templates (RTF, opens in Word, Pages, Google Docs, LibreOffice) ---------- */
+const rtfEsc = s => String(s).replace(/\\/g,'\\\\').replace(/{/g,'\\{').replace(/}/g,'\\}').replace(/\n/g,'\\line ').replace(/[^\x00-\x7f]/g, c => { const n=c.charCodeAt(0); return '\\u'+(n>32767?n-65536:n)+'?'; });
+function rtfTable(rows, widths){
+  const total = 9300, w = widths || rows[0].map(()=>1), sum = w.reduce((a,b)=>a+b,0);
+  let edges=[], acc=0; for (const x of w){ acc += Math.round(total*x/sum); edges.push(acc); }
+  return rows.map((r,ri)=>'\\trowd\\trgaph100\\trleft0'+edges.map(e=>'\\clbrdrt\\brdrs\\brdrw10\\clbrdrl\\brdrs\\brdrw10\\clbrdrb\\brdrs\\brdrw10\\clbrdrr\\brdrs\\brdrw10'+(ri===0&&r.header?'\\clcbpat2':'')+'\\cellx'+e).join('')+
+    r.cells.map(c=>'\\pard\\intbl\\sa60 '+(r.header?'\\b ':'')+rtfEsc(c)+(r.header?'\\b0':'')+'\\cell').join('')+'\\row').join('')+'\\pard\\sa160\\par';
+}
+const T = {
+  h:t=>`{\\pard\\sb240\\sa120\\b\\fs24 ${rtfEsc(t)}\\par}`,
+  title:t=>`{\\pard\\qc\\sa80\\b\\fs30 ${rtfEsc(t)}\\par}`,
+  sub:t=>`{\\pard\\qc\\sa240\\i\\fs20 ${rtfEsc(t)}\\par}`,
+  p:t=>`{\\pard\\sa140 ${rtfEsc(t)}\\par}`,
+  note:t=>`{\\pard\\sa200\\i\\fs18\\cf3 ${rtfEsc(t)}\\par}`,
+  kv:rows=>rtfTable(rows.map(([k,v])=>({cells:[k,v||'']})),[2,3]),
+  grid:(head,n,widths)=>rtfTable([{header:true,cells:head},...Array.from({length:n},()=>({cells:head.map(()=>' ')}))],widths),
+  rows:(head,rows,widths)=>rtfTable([{header:true,cells:head},...rows.map(r=>({cells:r}))],widths),
+  lines:n=>Array.from({length:n},()=>`{\\pard\\sa120 ${'_'.repeat(88)}\\par}`).join(''),
+  sign:(labels)=>rtfTable([{cells:labels},{cells:labels.map(()=>'\n\n\n')}],labels.map(()=>1)),
+};
+const place = () => T.p('En ____________________, a ____ de ______________ de 20____');
+const who = () => ({name: S.p.name || '', nif: S.nif || ''});
+const repLine = () => T.p(`D./Dña. ______________________________, con DNI/NIE ______________, en nombre y representación de ${who().name||'______________________________'}, con NIF ${who().nif||'______________'},`);
+const selectedGrants = () => GRANTS.filter(g=>S.selected.has(g.id));
+const TEMPLATES = {
+  representacion: {file:'autorizacion-representacion', build(){ const gs=selectedGrants(); return [
+    T.title('AUTORIZACIÓN DE REPRESENTACIÓN'), T.sub('Artículo 5 de la Ley 39/2015, de 1 de octubre, del Procedimiento Administrativo Común'),
+    T.h('1. Persona o entidad interesada (otorga la representación)'),
+    T.kv([['Nombre o razón social',who().name],['NIF',who().nif],['Representante legal',''],['DNI/NIE del representante legal',''],['Domicilio',''],['Correo electrónico','']]),
+    T.h('2. Representante (actúa en su nombre)'),
+    T.kv([['Nombre o razón social',CONFIG.operator],['NIF',CONFIG.operatorNif],['Domicilio',CONFIG.operatorAddress],['Correo electrónico',CONFIG.operatorEmail]]),
+    T.h('3. Procedimientos'),
+    T.p('La persona interesada otorga su representación para que actúe en su nombre en los siguientes procedimientos:'),
+    T.rows(['Ayuda o subvención','Organismo'], gs.length?gs.map(g=>[g.name,g.body]):[[' ',' ']], [3,2]),
+    T.p('La representación comprende: presentar solicitudes, declaraciones responsables y documentos; consultar el estado del expediente; subsanar y aportar documentación; recibir comunicaciones y notificaciones; y presentar la justificación. No incluye desistir ni renunciar en nombre de la persona interesada sin su autorización expresa por escrito.'),
+    T.p('Con la firma de este documento, el representante acepta la representación conferida.'),
+    T.note('Esta representación también puede otorgarse electrónicamente en el Registro Electrónico de Apoderamientos (REA). Algunos organismos exigen su propio modelo: en ese caso, use el oficial.'),
+    place(), T.sign(['Firma de la persona interesada','Firma del representante (aceptación)'])
+  ];}},
+  minimis: {file:'declaracion-minimis', build(){ return [
+    T.title('DECLARACIÓN RESPONSABLE DE AYUDAS DE MINIMIS'), T.sub('Reglamento (UE) 2023/2831 de la Comisión, de 13 de diciembre de 2023'),
+    repLine(),
+    T.p('DECLARA bajo su responsabilidad:'),
+    T.p('1. Que la empresa    [   ] NO ha recibido    [   ] SÍ ha recibido    ayudas sujetas al régimen de minimis durante los últimos tres años.'),
+    T.p('2. Que, en caso afirmativo, son las siguientes:'),
+    T.grid(['Organismo concedente','Ayuda','Fecha de concesión','Importe (€)'],4,[3,3,2,2]),
+    T.p('3. Que, sumando la ayuda que ahora solicita, el total de ayudas de minimis recibidas en los últimos tres años no supera 300.000 euros.'),
+    T.p('4. Que se compromete a comunicar cualquier nueva ayuda de minimis que obtenga hasta la resolución del procedimiento.'),
+    place(), T.sign(['Firma del representante legal'])
+  ];}},
+  pyme: {file:'declaracion-pyme', build(){ return [
+    T.title('DECLARACIÓN RESPONSABLE DE CONDICIÓN DE PYME'), T.sub('Anexo I del Reglamento (UE) nº 651/2014 de la Comisión'),
+    repLine(), T.p('DECLARA bajo su responsabilidad:'),
+    T.p('1. Que los datos de la empresa en el último ejercicio cerrado son:'),
+    T.kv([['Ejercicio de referencia',''],['Personas empleadas (media anual)',S.p.employees||''],['Volumen de negocio anual (€)',''],['Balance general anual (€)','']]),
+    T.p('2. Que la empresa tiene la condición de:    [   ] Microempresa (menos de 10 personas y volumen de negocio o balance de hasta 2 millones €)    [   ] Pequeña empresa (menos de 50 personas y hasta 10 millones €)    [   ] Mediana empresa (menos de 250 personas, volumen de negocio de hasta 50 millones € o balance de hasta 43 millones €)'),
+    T.p('3. Que la empresa es:    [   ] Autónoma    [   ] Asociada    [   ] Vinculada    (según el artículo 3 del Anexo I). Si es asociada o vinculada, se adjuntan los datos de las empresas relacionadas.'),
+    T.p('4. Que los datos anteriores son ciertos y se compromete a comunicar cualquier cambio.'),
+    place(), T.sign(['Firma del representante legal'])
+  ];}},
+  memoria_equipos: {file:'memoria-renovacion-equipos', build(){ return [
+    T.title('MEMORIA DESCRIPTIVA DE LA ACTUACIÓN'), T.sub('Real Decreto 638/2026: plan de choque para la renovación de equipamiento en el sector de la hostelería'),
+    T.note('Plantilla orientativa. Consulte la Guía del Solicitante y los modelos oficiales en el Portal de Ayudas del Ministerio de Industria y Turismo, y use el modelo oficial si existe.'),
+    T.h('1. Solicitante y establecimiento'),
+    T.kv([['Razón social',who().name],['NIF',who().nif],['Nombre comercial del establecimiento',''],['Dirección del establecimiento',''],['CNAE (55 o 56)',''],['Superficie y aforo aproximados','']]),
+    T.h('2. Equipos que se sustituyen'),
+    T.grid(['Tipo de equipo','Marca y modelo','Antigüedad (años)','Potencia (kW)','Consumo anual (kWh)'],5,[3,3,2,2,2]),
+    T.h('3. Equipos nuevos'),
+    T.grid(['Tipo de equipo','Marca y modelo','Clase energética','Potencia (kW)','Consumo anual (kWh)','Coste sin IVA (€)'],5,[3,3,2,2,2,2]),
+    T.h('4. Ahorro energético previsto'),
+    T.kv([['Consumo anual actual (kWh)',''],['Consumo anual previsto (kWh)',''],['Ahorro anual (kWh y %)',''],['Método de cálculo (etiquetas energéticas o informe técnico)','']]),
+    T.h('5. Presupuesto (sin IVA)'),
+    T.kv([['Equipos',''],['Instalación y obras asociadas',''],['Gestión de residuos',''],['Certificado de eficiencia energética',''],['Gestión de la solicitud (máx. 4 %)',''],['TOTAL','']]),
+    T.h('6. Declaraciones'),
+    T.p('[   ] Los equipos nuevos no utilizan combustibles fósiles, incluido el gas natural.'),
+    T.p('[   ] Los equipos sustituidos serán retirados por un gestor de residuos autorizado.'),
+    T.p('[   ] No se han solicitado otras ayudas para los mismos costes.'),
+    place(), T.sign(['Firma del representante legal'])
+  ];}},
+  memoria_proyecto: {file:'memoria-proyecto', build(){ return [
+    T.title('MEMORIA DEL PROYECTO'), T.note('Plantilla orientativa. Si la convocatoria facilita un modelo oficial, úselo.'),
+    T.h('1. Datos del solicitante'), T.kv([['Razón social',who().name],['NIF',who().nif],['Actividad (IAE/CNAE)',''],['Dirección del centro de trabajo',''],['Personas empleadas',S.p.employees||'']]),
+    T.h('2. Objetivo del proyecto'), T.lines(4),
+    T.h('3. Descripción de las actuaciones'), T.lines(6),
+    T.h('4. Presupuesto'), T.grid(['Concepto','Proveedor','Importe sin IVA (€)'],6,[4,3,2]),
+    T.h('5. Calendario'), T.kv([['Inicio previsto',''],['Finalización prevista','']]),
+    T.h('6. Resultados esperados'), T.p('Empleo, ahorro energético, accesibilidad, ventas u otros indicadores:'), T.lines(4),
+    place(), T.sign(['Firma del representante legal'])
+  ];}},
+  plan_viabilidad: {file:'plan-de-viabilidad', build(){ const rows=['Ingresos (ventas)','Compras y materias primas','Personal','Alquiler','Suministros (luz, agua, gas)','Cuota de autónomo / Seguridad Social','Seguros, gestoría y asesoría','Marketing','Amortizaciones','Otros gastos','TOTAL GASTOS','RESULTADO (ingresos − gastos)']; return [
+    T.title('PLAN DE EMPRESA Y VIABILIDAD'), T.note('Plantilla orientativa. Para la ayuda de inicio de actividad de la Junta de Andalucía (Línea 2), el resultado debe ser positivo en todos los años.'),
+    T.h('1. Promotor y negocio'), T.kv([['Nombre o razón social',who().name],['DNI/NIE o NIF',who().nif],['Actividad (IAE/CNAE)',''],['Dirección',''],['Fecha de alta prevista o real','']]),
+    T.h('2. Descripción del negocio'), T.p('Productos o servicios, clientes, competencia y ubicación:'), T.lines(6),
+    T.h('3. Inversión inicial y financiación'), T.rows(['Concepto','Importe (€)'],[['Local y obras',' '],['Equipamiento y mobiliario',' '],['Existencias iniciales',' '],['Otros',' '],['TOTAL INVERSIÓN',' '],['Fondos propios',' '],['Préstamos',' '],['Ayudas y subvenciones',' '],['TOTAL FINANCIACIÓN',' ']],[3,2]),
+    T.h('4. Previsión de resultados'), T.rows(['Concepto','Año 1 (€)','Año 2 (€)','Año 3 (€)'], rows.map(r=>[r,' ',' ',' ']), [4,2,2,2]),
+    T.h('5. Hipótesis principales'), T.p('Precio medio, clientes previstos, estacionalidad, crecimiento:'), T.lines(4),
+    place(), T.sign(['Firma del promotor'])
+  ];}}
+};
+function downloadTemplate(key){
+  const t = TEMPLATES[key]; if (!t) return;
+  const body = t.build().join('\n');
+  const rtf = '{\\rtf1\\ansi\\ansicpg1252\\deff0{\\fonttbl{\\f0\\fswiss Arial;}}{\\colortbl;\\red0\\green0\\blue0;\\red234\\green241\\blue253;\\red90\\green104\\blue118;}\\paperw11906\\paperh16838\\margl1300\\margr1300\\margt1300\\margb1300\\f0\\fs21\n'+body+'\n}';
+  const blob = new Blob([rtf], {type:'application/rtf'});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+  a.download = `${t.file}${S.p.name?'-'+S.p.name.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,''):''}.rtf`;
+  document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+}
+
+/* ---------- Questions (adaptive) ---------- */
+const QUESTIONS = [
+  {k:'debts', unknown:'unsure', rules:'*', html:p=>`<span class="q">Any unpaid debts with Hacienda or Social Security?</span><p class="hint">Debts block almost every grant, so we check this first.</p>${seg('debts',[['no','No'],['yes','Yes'],['unsure','Not sure']])}`},
+  {k:'replaceEquip', unknown:'unsure', rules:['equipos_hosteleria'], html:()=>`<span class="q">Do you have older equipment you could replace with a more efficient model?</span><p class="hint">Fridges, dishwasher, coffee or catering machines, AC units, awning, terrace umbrellas. Not gas equipment.</p>${seg('replaceEquip',[['yes','Yes'],['no','No'],['unsure','Not sure']])}`},
+  {k:'alta', unknown:'unsure', rules:['cuota_cero','linea_2','tarifa_plana','pago_unico'], html:p=>`<span class="q">${p.entity==='sl'?'When did the owner register as autónomo (societario)?':'When did you register as autónomo?'}</span>${seg('alta',[['date','Pick a date'],['notyet','Not registered yet'],['unsure','Not sure']])}${p.alta==='date'?`<div class="row"><select data-k="altaM" aria-label="Month">${months(p.altaM)}</select><select data-k="altaY" aria-label="Year">${years(p.altaY,2015)}</select></div>`:''}`},
+  {k:'tarifaPlana', unknown:'unsure', rules:['cuota_cero','linea_2','tarifa_plana'], show:p=>p.alta!=='notyet', html:()=>`<span class="q">On the tarifa plana (reduced €80 quota)?</span>${seg('tarifaPlana',[['yes','Yes'],['no','No'],['unsure','Not sure']])}`},
+  {k:'empadronado', unknown:'unsure', rules:['cuota_cero','innovactiva'], html:p=>`<span class="q">${p.entity==='sl'?'Are the owners':'Are you'} registered on the padrón in an Andalusian town?</span>${seg('empadronado',[['yes','Yes'],['no','No'],['unsure','Not sure']])}`},
+  {k:'age', unknown:'', rules:['linea_2','innovactiva'], html:p=>`<label class="q" for="age">${p.entity==='sl'?'Age of the oldest partner':'Your age'}</label><input type="number" id="age" data-k="age" min="16" max="99" value="${esc(p.age)}" style="max-width:8rem">`},
+  {k:'gender', unknown:'na', rules:['linea_2'], html:()=>`<span class="q">Gender</span><p class="hint">Optional. Only used because one grant pays different amounts.</p>${seg('gender',[['f','Woman'],['m','Man'],['na','Prefer not to say']])}`},
+  {k:'education', unknown:'unsure', rules:['innovactiva'], html:()=>`<span class="q">At least ESO (secondary school) or an equivalent qualification?</span>${seg('education',[['yes','Yes'],['no','No'],['unsure','Not sure']])}`},
+  {k:'turnover', unknown:'unsure', rules:['camara_pyme'], html:()=>`<span class="q">Did the business invoice €100,000 or more last year?</span>${seg('turnover',[['yes','Yes'],['no','No'],['unsure','Not sure']])}`},
+  {k:'kitBefore', unknown:'unsure', rules:['kit_digital'], html:()=>`<span class="q">Has the business had a Kit Digital voucher before?</span>${seg('kitBefore',[['no','No'],['yes','Yes'],['unsure','Not sure']])}`},
+  {k:'energyProject', unknown:'unsure', rules:['inea'], html:()=>`<span class="q">Planning an energy project of about €11,000 or more that hasn’t started?</span><p class="hint">Solar panels, batteries, efficient climate systems, insulation.</p>${seg('energyProject',[['yes','Yes'],['no','No'],['unsure','Maybe']])}`},
+  {k:'rta', unknown:'unsure', rules:['pymetur'], html:()=>`<span class="q">Is the business in the Registro de Turismo de Andalucía?</span>${seg('rta',[['yes','Yes'],['no','No'],['unsure','Not sure']])}`},
+  {k:'hiring', unknown:'unsure', rules:['talento_joven','talento_45'], html:()=>`<span class="q">Planning to hire someone full-time for at least 6 months?</span>${seg('hiring',[['yes','Yes'],['no','No'],['unsure','Maybe']])}`},
+  {k:'candidate', unknown:'unsure', rules:['talento_joven','talento_45'], show:p=>p.hiring!=='no', html:()=>`<span class="q">Who might you hire?</span>${seg('candidate',[['youth','Under 30'],['45plus','Unemployed, 45 to 60'],['other','Someone else'],['unsure','Not sure']])}`},
+  {k:'unemployed', unknown:'unsure', rules:['pago_unico'], show:p=>p.alta==='notyet', html:()=>`<span class="q">Are you receiving unemployment benefit (paro)?</span>${seg('unemployed',[['yes','Yes'],['no','No']])}`},
+];
+
+function questionRelevant(q){
+  if (q.show && !q.show(S.p)) return false;
+  if (q.rules==='*') return true;
+  const probe = {...S.p, [q.k]: q.unknown};
+  return GRANTS.filter(g=>q.rules.includes(g.rule_key)).some(g => evaluate(g, probe).status !== 'no');
+}
+
+/* ---------- UI bits ---------- */
+const seg = (key, opts) => `<div class="seg" role="radiogroup">${opts.map(([v,l])=>`<label><input type="radio" name="${key}" data-k="${key}" value="${v}" ${String(S.p[key])===String(v)?'checked':''}><span>${l}</span></label>`).join('')}</div>`;
+const years = (sel, from) => { let o='<option value="">Year</option>'; for(let y=TODAY.getFullYear();y>=from;y--) o+=`<option ${String(sel)===String(y)?'selected':''}>${y}</option>`; return o; };
+const months = sel => '<option value="">Month</option>' + MONTHS.map((m,i)=>`<option value="${i+1}" ${String(sel)===String(i+1)?'selected':''}>${m}</option>`).join('');
+const progress = () => `<div class="progress" aria-hidden="true">${STEPS.map((_,i)=>`<i class="${i<S.step?'on':''}"></i>`).join('')}</div><div class="stepcount">Step ${S.step} of 5: ${STEPS[S.step-1]}</div>`;
+const auto = k => S.auto[k] ? '<span class="src">From the Registro Mercantil</span>' : '';
+
+/* ---------- Views: start, details, questions ---------- */
+function vStart(){
+  return `${progress()}<h1>Find the grants your business can get.</h1>
+  <p class="lede">Enter your NIF, NIE or CIF. We match you against grants in Andalucía and tell you exactly which documents to upload, with templates for the forms.</p>
+  <label class="sr" for="nif">NIF, NIE or CIF</label>
+  <div class="nif"><input id="nif" autocomplete="off" spellcheck="false" maxlength="12" placeholder="B12345678" value="${esc(S.nif)}"><button class="primary" data-act="nif" ${S.busy?'disabled':''}>${S.busy?'Checking…':'Check my business'}</button></div>
+  <p class="msg err" id="nifmsg">${esc(S.err)}</p>
+  <p>No number handy? <button class="linkbtn" data-act="demo">Try it with Easy Beans Coffee</button></p>`;
+}
+function lookupNote(){
+  const L=S.lookup; if (S.demo) return `<div class="note">Demo profile for Easy Beans Coffee (SL, San Pedro de Alcántara). Unknown answers are left as “Not sure”.</div>`;
+  if (!L) return '';
+  if (L.lookup==='found' && S.company){
+    const c=S.company, inactive = c.status && !/activ/i.test(c.status);
+    return `<div class="company"><b>${esc(c.name||L.nif)}</b> <span class="src">Registro Mercantil</span>
+      <dl>${c.status?`<dt>Status</dt><dd>${esc(c.status)}</dd>`:''}${c.province?`<dt>Province</dt><dd>${esc(c.province)}</dd>`:''}${c.cnae?`<dt>Activity</dt><dd>${esc(c.cnae)}${c.cnaeLabel?' · '+esc(c.cnaeLabel):''}</dd>`:''}${c.founded?`<dt>Founded</dt><dd>${esc(c.founded)}</dd>`:''}</dl>
+      ${inactive?`<p class="msg err">This company isn’t listed as active. Most grants need an active business.</p>`:''}</div><p class="hint">Not your business? <button class="linkbtn" data-go="1">Check the number</button></p>`;
+  }
+  const msgs = {
+    not_public:`<b>${esc(L.nif)}</b> is a valid ${esc(L.label)}. Autónomos aren’t in any public register, so these details come from you.`,
+    not_configured:`<b>${esc(L.nif)}</b> is a valid ${esc(L.label)} CIF. Automatic lookup isn’t switched on yet, so please confirm the details below.`,
+    not_found:`<b>${esc(L.nif)}</b> is a valid CIF, but we couldn’t find it in the Registro Mercantil. Please enter the details below.`,
+    rate_limited:`${esc(L.message||'Too many lookups right now.')}`,
+    error:`We couldn’t reach the Registro Mercantil just now. Please enter the details below.`
+  };
+  return `<div class="note">${msgs[L.lookup]||''}</div>`;
+}
+function vDetails(){
+  const p=S.p;
+  return `${progress()}<h2>Confirm your business details</h2>${lookupNote()}
+  <div class="field"><label class="q" for="name">Business name ${auto('name')}</label><input type="text" id="name" data-k="name" value="${esc(p.name)}"></div>
+  <div class="field"><span class="q">Business type ${auto('entity')}</span>${seg('entity',[['autonomo','Autónomo'],['sl','SL (limited company)'],['other','Other company']])}</div>
+  <div class="field"><span class="q">What kind of business? ${auto('sector')}</span>${seg('sector',[['hospitality','Bar, café, restaurant or hotel'],['retail','Shop'],['services','Services'],['industry','Industry or manufacturing'],['other','Other']])}</div>
+  <div class="field"><span class="q">Where is it based? ${auto('province')}</span>${seg('province',[['malaga','Málaga province'],['andalucia','Elsewhere in Andalucía'],['outside','Outside Andalucía']])}</div>
+  <div class="field"><span class="q">Town size</span><p class="hint">San Pedro de Alcántara counts as Marbella, which is over 20,000.</p>${seg('town',[['small','Under 10,000'],['mid','10,000 to 20,000'],['large','Over 20,000'],['unsure','Not sure']])}</div>
+  <div class="field"><span class="q">When did the business start trading? ${auto('start')}</span><p class="hint">Your IAE registration date (alta en Hacienda).</p>
+    <div class="row"><select data-k="startM" aria-label="Start month">${months(p.startM)}</select><select data-k="startY" aria-label="Start year">${years(p.startY,1990)}</select></div></div>
+  <div class="field"><label class="q" for="employees">Number of employees</label><p class="hint">Not counting owners. Part-time staff count as one each.</p><input type="number" id="employees" data-k="employees" min="0" max="999" value="${esc(p.employees)}" style="max-width:8rem"></div>
+  <p class="msg err" id="detmsg"></p>
+  <div class="actions"><button class="primary" data-act="toQuestions">Continue</button><button class="ghost" data-go="1">Back</button></div>`;
+}
+function vQuestions(){
+  const qs = QUESTIONS.filter(questionRelevant);
+  return `${progress()}<h2>${qs.length} quick question${qs.length===1?'':'s'}</h2><p class="lede">Only what decides the grants that could still apply to you. Questions disappear as grants are ruled in or out.</p>
+  ${qs.map(q=>`<div class="field">${q.html(S.p)}</div>`).join('')}
+  <div class="actions"><button class="primary" data-go="4">Show my grants</button><button class="ghost" data-go="2">Back</button></div>`;
+}
+
+/* ---------- Views: results ---------- */
+function deadlineText(x){
+  const {g,r,status}=x;
+  if (status==='next') return g.window_state==='upcoming' ? 'Not open yet' : (r.timing==='next' ? 'Later for you' : 'Closed for now');
+  if (g.window_state==='permanent') return 'All year';
+  const dl = r.deadline || (g.closes && D(g.closes));
+  if (!dl) return 'Until funds run out';
+  const n = daysTo(dl);
+  return `${fmt(dl)}${n<=14&&n>=0?` <span class="urgent">(${n===0?'last day':n+' day'+(n===1?'':'s')+' left'})</span>`:''}`;
+}
+function verdict(x){
+  const {g,r,status}=x, fails=r.conds.filter(c=>c.state==='fail'), unk=r.conds.filter(c=>c.state==='unknown');
+  if (status==='active') return `<p class="verdict active">✓ ${esc(r.conds[0]?.label||'Already yours.')}</p>`;
+  if (status==='no') return `<p class="verdict no">✕ Not a match: ${esc(fails[0].label.charAt(0).toLowerCase()+fails[0].label.slice(1))}.${fails[0].note?' '+esc(fails[0].note):''}</p>`;
+  if (status==='next') return `<p class="verdict next">${esc(r.whenNote || g.next_call || 'Watch for the next call.')}</p>`;
+  if (status==='check') return `<p class="verdict check">? To confirm: ${unk.slice(0,2).map(c=>esc(c.label.charAt(0).toLowerCase()+c.label.slice(1))).join('; ')}${unk.length>2?` and ${unk.length-2} more`:''}.</p>`;
+  return `<p class="verdict yes">✓ You meet every requirement we can check.</p>`;
+}
+function card(x,i){
+  const {g,r,status}=x, open=status==='yes'||status==='check';
+  const met=r.conds.filter(c=>c.state==='pass').length, total=r.conds.length;
+  const reqs = r.conds.map(c=>`<li><span class="ic ${c.state}" aria-label="${c.state==='pass'?'Met':c.state==='fail'?'Not met':'To confirm'}">${ICON[c.state]}</span><span>${esc(c.label)}${c.note?`<small>${esc(c.note)}</small>`:''}</span></li>`).join('');
+  const docs = docsForGrant(g);
+  const applyDocs = docs.filter(d=>d.doc.stage==='apply'), afterDocs = docs.filter(d=>d.doc.stage==='after');
+  const docLi = d => `<li>${esc(d.doc.name)}${d.doc.template_key?'<span class="tag">Template</span>':''}${d.doc.kind==='form'&&!d.doc.template_key?'<span class="tag">Official form</span>':''}${!d.row.required?' <span class="req o">Optional</span>':''}</li>`;
+  const how = `<details class="how"><summary>How it works</summary>
+    <h4>Requirements, checked against your answers</h4><ul class="ticks">${reqs}</ul>
+    ${g.covers?.length?`<h4>What it pays for</h4><ul class="plain">${g.covers.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>`:''}
+    ${g.paid?`<h4>How you get paid</h4><p style="margin:0">${esc(g.paid)}</p>`:''}
+    ${g.obligations?.length?`<h4>What you commit to</h4><ul class="plain">${g.obligations.map(o=>`<li>${esc(o)}</li>`).join('')}</ul>`:''}
+    ${applyDocs.length?`<h4>Documents to apply</h4><ul class="plain">${applyDocs.map(docLi).join('')}</ul>`:''}
+    ${afterDocs.length?`<h4>After approval</h4><ul class="plain">${afterDocs.map(docLi).join('')}</ul>`:''}
+    ${g.steps?.length?`<h4>Steps</h4><ol class="steps">${g.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>`:''}
+    <p class="meta"><a href="${esc(g.source_url)}" target="_blank" rel="noopener">Official page</a>. ${g.verified_at?`Checked ${fmt(D(g.verified_at))}.`:'Not yet verified by us.'}${g.verification_note?` ${esc(g.verification_note)}`:''}</p>
+  </details>`;
+  const pick = open && g.selectable ? `<label class="pick"><input type="checkbox" data-pick="${esc(g.id)}" ${S.selected.has(g.id)?'checked':''}> Add to my applications<small>Done-for-you fee if awarded: ${eur(feeFor(x))}</small></label>` : '';
+  return `<article class="grant s-${status}"><div class="grant-head"><div><p class="eyebrow">${esc(CAT_LABEL[CATS[g.category]]||'')} · ${esc(g.body)}</p><h3>${esc(g.name)}</h3></div><span class="stamp ${status}" style="--i:${i}">${STAMP[status]}</span></div>
+    ${g.summary?`<p class="summary">${esc(g.summary)}</p>`:''}
+    <dl class="facts"><div><dt>Amount</dt><dd>${esc(r.amount)}</dd></div><div><dt>Deadline</dt><dd>${deadlineText(x)}</dd></div><div><dt>Your fit</dt><dd>${met} of ${total} requirements met</dd></div></dl>
+    ${verdict(x)}${how}${pick}</article>`;
+}
+function vResults(){
+  const all=evaluateAll();
+  const inFilter = x => S.filter==='all' || CATS[x.g.category]===S.filter;
+  const list=all.filter(inFilter), by=s=>list.filter(x=>x.status===s);
+  const openAll=all.filter(x=>(x.status==='yes'||x.status==='check')&&x.g.selectable);
+  const sum=openAll.reduce((a,x)=>a+(x.r.max||0),0), nextAll=all.filter(x=>x.status==='next').length;
+  const counts={}; for (const x of all) if (x.status!=='no'){ counts.all=(counts.all||0)+1; const c=CATS[x.g.category]; counts[c]=(counts[c]||0)+1; }
+  let i=0; const block=(l,title,sub)=>l.length?`<section class="group"><h3>${title}</h3>${sub?`<p>${sub}</p>`:''}${l.map(x=>card(x,i++)).join('')}</section>`:'';
+  const head = openAll.length ? `${openAll.length} open now${sum?`, worth up to ${eur(sum)}`:''}.${nextAll?` ${nextAll} more to watch for.`:''}` : `Nothing open right now that fits.${nextAll?` ${nextAll} to watch for.`:''}`;
+  const chips = FILTERS.map(([k,l])=>`<button class="chip ${S.filter===k?'on':''}" data-filter="${k}" aria-pressed="${S.filter===k}">${l}<b>${counts[k]||0}</b></button>`).join('');
+  const body = `${block(by('yes'),'Apply now','You meet every requirement we can check.')}
+  ${block(by('check'),'Open now: confirm first','The items marked ? decide it. We check them with you before applying.')}
+  ${block(by('active'),'Already yours','')}
+  ${block(by('next'),'Watch for the next call','Closed or not open yet, but you fit what we know so far.')}`;
+  return `${progress()}<h2>Grants for ${S.p.name?esc(S.p.name):'your business'}</h2><p class="headline-sum">${head}</p>
+  <div class="filters" role="toolbar" aria-label="Filter grants">${chips}</div>
+  <div class="${S.animate?'results-in':''}">${body.trim()?body:`<p class="empty">No grants in this category fit right now.</p>`}</div>
+  ${by('no').length?`<details class="group nomatch"><summary>Not a match (${by('no').length})</summary>${by('no').map(x=>card(x,0)).join('')}</details>`:''}
+  <div class="actions"><button class="primary" data-go="5" ${S.selected.size?'':'disabled'}>Apply for ${S.selected.size||'selected'} grant${S.selected.size===1?'':'s'}</button><button class="ghost" data-go="3">Change answers</button></div>`;
+}
+
+/* ---------- Views: apply ---------- */
+const selectedResults = () => evaluateAll().filter(x=>S.selected.has(x.g.id));
+function contactFields(){
+  const c=S.contact;
+  return `<div class="field"><label class="q" for="cname">Your name</label><input type="text" id="cname" data-c="name" value="${esc(c.name)}"></div>
+  <div class="field"><label class="q" for="cemail">Email</label><input type="email" id="cemail" data-c="email" value="${esc(c.email)}"></div>
+  <div class="field"><label class="q" for="cphone">Phone (optional)</label><input type="tel" id="cphone" data-c="phone" value="${esc(c.phone)}"></div>`;
+}
+function ready(){ const c=S.contact; return c.name.trim() && /\S+@\S+\.\S+/.test(c.email) && S.agree.data && (S.tier!=='dfy' || S.agree.fee); }
+const isDone = e => (S.docFiles[e.doc.id]||[]).length>0 || S.prepare[e.doc.id] || S.have[e.doc.id];
+
+function docRow(e, mode){
+  const d=e.doc, files=S.docFiles[d.id]||[], done=isDone(e);
+  const links = e.urls.map((u,i)=>`<a class="ext" href="${esc(u)}" target="_blank" rel="noopener">${d.kind==='form'&&!d.template_key?'Official form':d.kind==='form'?'Official models':'Where to get it'}${e.urls.length>1?' '+(i+1):''} ↗</a>`).join('');
+  const tpl = d.template_key ? `<button class="tpl" data-tpl="${d.template_key}">Download template (pre-filled)</button>` : '';
+  let action = '';
+  if (d.kind==='credential' || d.kind==='online') action = `<label class="have"><input type="checkbox" data-have="${d.id}" ${S.have[d.id]?'checked':''}> I have this ready</label>`;
+  else if (mode==='dfy' && d.stage==='apply'){
+    action = `<label class="upbtn">${files.length?'Add another file':'Upload'}<input type="file" multiple accept="application/pdf,image/jpeg,image/png,image/webp,.rtf,.doc,.docx" data-doc="${d.id}"></label>`;
+    if (d.we_can_prepare) action += `<label class="prep"><input type="checkbox" data-prep="${d.id}" ${S.prepare[d.id]?'checked':''}> Prepare it for me from my answers</label>`;
+  } else if (d.stage==='apply') action = `<label class="have"><input type="checkbox" data-have="${d.id}" ${S.have[d.id]?'checked':''}> I have this ready</label>`;
+  const list = files.length ? `<ul class="filelist">${files.map((f,i)=>`<li><span>${esc(f.name)}</span><button data-rm="${d.id}:${i}" aria-label="Remove ${esc(f.name)}">Remove</button></li>`).join('')}</ul>` : '';
+  return `<div class="doc ${done?'done':''}"><span class="state" aria-hidden="true">${done?'✓':''}</span><div>
+    <b>${esc(d.name)}</b>${d.stage==='apply'?`<span class="req ${e.required?'r':'o'}">${e.required?'Required':'Optional'}</span>`:''}
+    ${d.how_to_get?`<p class="how-get">${esc(d.how_to_get)}</p>`:''}
+    ${e.notes.map(n=>`<p class="note-line">${esc(n)}</p>`).join('')}
+    <p class="for">Needed for: ${esc(e.grants.join(', '))}</p>
+    ${(tpl||links||action)?`<div class="doc-actions">${tpl}${links}</div>${action?`<div>${action}</div>`:''}`:''}${list}</div></div>`;
+}
+function docsSection(mode){
+  const sel=[...S.selected], all=docsFor(sel, mode);
+  const ready_=all.filter(e=>e.doc.kind==='credential'||e.doc.kind==='online');
+  const forms=all.filter(e=>e.doc.kind==='form' && e.doc.stage==='apply');
+  const uploads=all.filter(e=>e.doc.kind==='upload' && e.doc.stage==='apply');
+  const after=all.filter(e=>e.doc.stage==='after');
+  const req=[...forms,...uploads].filter(e=>e.required), doneN=req.filter(isDone).length;
+  const pct = req.length? Math.round(100*doneN/req.length):100;
+  const sec=(t,p,l)=>l.length?`<section class="docsec"><h3>${t}</h3><p>${p}</p>${l.map(e=>docRow(e,mode)).join('')}</section>`:'';
+  return `<div class="docsec"><h3>${mode==='dfy'?'Your documents':'Your document checklist'}</h3>
+    <p>${mode==='dfy'?'Upload each document in its own slot so we can match it to the right grant. You can send missing ones later.':'Everything you need for the grants you picked, with templates for the forms.'}</p>
+    <div class="docprogress" aria-hidden="true"><i style="width:${pct}%"></i></div><p class="hint">${doneN} of ${req.length} required documents ${mode==='dfy'?'added':'ready'}</p></div>
+    ${sec('Have these ready','Not uploaded, but you’ll need them to sign.',ready_)}
+    ${sec('Forms to fill in and sign','Download the template (pre-filled with your details) or the official form, complete it, sign it and upload it.',forms)}
+    ${sec('Documents to upload','Official certificates and records. Most can be downloaded instantly with your digital certificate.',uploads)}
+    ${sec('Keep for after approval','Not needed now, but keep them from day one. You’ll need them to get paid.',after)}`;
+}
+function vApply(){
+  if (S.sent) return vSent();
+  const sel=selectedResults();
+  if (!sel.length) return `${progress()}<h2>No grants selected</h2><p>Go back and tick the grants you want to apply for.</p><div class="actions"><button class="primary" data-go="4">Back to my grants</button></div>`;
+  const tiers=`<div class="tiers">
+    <button class="tier ${S.tier==='diy'?'on':''}" data-tier="diy" aria-pressed="${S.tier==='diy'}"><b>Do it yourself</b><span class="price">Free during beta (then ${eur(CONFIG.diyPrice)})</span><span class="d">Your document checklist, pre-filled templates, steps and official links. You submit with your own digital certificate.</span></button>
+    <button class="tier ${S.tier==='dfy'?'on':''}" data-tier="dfy" aria-pressed="${S.tier==='dfy'}"><b>We apply for you</b><span class="price">${Math.round(CONFIG.commission*100)}% of what you’re awarded (min ${eur(CONFIG.minFee)} per grant)</span><span class="d">Upload your documents here. We prepare the rest, submit as your authorised representative and follow it to payment.</span></button>
+  </div>`;
+  return `${progress()}<h2>How do you want to apply?</h2><ul class="recap">${sel.map(x=>`<li>${esc(x.g.name)}: ${esc(x.r.amount)}</li>`).join('')}</ul>${tiers}${S.tier==='diy'?vDiy(sel):S.tier==='dfy'?vDfy(sel):''}
+  <div class="actions"><button class="ghost" data-go="4">Back to my grants</button></div>`;
+}
+function vDiy(sel){
+  const steps=sel.map(x=>{ const g=x.g, dl=x.r.deadline||(g.closes&&g.window_state==='open'?D(g.closes):null);
+    return `<div class="grantsteps"><h3>${esc(g.name)}</h3>${dl?`<p class="hint" style="margin:.2rem 0 0">Apply by ${fmt(dl)}</p>`:''}<ol class="steps">${(g.steps||[]).map(s=>`<li>${esc(s)}</li>`).join('')}</ol><a class="ext" href="${esc(g.source_url)}" target="_blank" rel="noopener">Official page ↗</a></div>`; }).join('');
+  return `<div class="note warn" style="margin-top:1.5rem">Every application here is online-only. Get a digital certificate or Cl@ve first if you don’t have one.</div>
+  ${docsSection('diy')}
+  <section class="docsec"><h3>Step by step</h3>${steps}</section>
+  <section class="docsec"><h3>Save your case and get deadline reminders</h3>${contactFields()}
+  <label class="check"><input type="checkbox" data-agree="data" ${S.agree.data?'checked':''}> <span>I agree to ${esc(CONFIG.operator)} storing these details to follow up on my grants. <a href="/privacy.html" target="_blank">Privacy</a></span></label>
+  <p class="msg err" id="sendmsg">${esc(S.err)}</p>
+  <div class="actions"><button class="primary" data-act="send" ${ready()&&!S.busy?'':'disabled'}>${S.busy?'Saving…':'Save my case'}</button></div></section>`;
+}
+function vDfy(sel){
+  return `${docsSection('dfy')}
+  <section class="docsec"><h3>What happens next</h3><ol class="steps">
+    <li>We check your documents and ask for anything missing.</li>
+    <li>We email you the service agreement within one working day.</li>
+    <li>You authorise us to submit for you (the signed template above, or online in the REA register).</li>
+    <li>We apply and follow up. The fee is charged only when a grant’s money reaches your account: ${sel.map(x=>`${esc(x.g.name)} ${eur(feeFor(x))}`).join('; ')}.</li></ol></section>
+  <section class="docsec"><h3>Your details</h3>${contactFields()}
+  <label class="check"><input type="checkbox" data-agree="data" ${S.agree.data?'checked':''}> <span>I agree to ${esc(CONFIG.operator)} using my data and documents to prepare these applications. <a href="/privacy.html" target="_blank">Privacy</a></span></label>
+  <label class="check"><input type="checkbox" data-agree="fee" ${S.agree.fee?'checked':''}> <span>I understand the fee: ${Math.round(CONFIG.commission*100)}% of each grant awarded (min ${eur(CONFIG.minFee)}), charged when the money arrives. The final terms are in the service agreement.</span></label>
+  <p class="msg err" id="sendmsg">${esc(S.err)}</p>
+  <div class="actions"><button class="primary" data-act="send" ${ready()&&!S.busy?'':'disabled'}>${S.busy?'Uploading…':'Send request and documents'}</button></div></section>`;
+}
+function vSent(){
+  const s=S.sent;
+  return `${progress()}<h2>${S.tier==='dfy'?'Request received':'Case saved'}</h2><p>Your reference:</p><p class="ref">${esc(s.ref)}</p>
+  ${S.tier==='dfy'?`<p>${s.uploaded} document${s.uploaded===1?'':'s'} uploaded.</p>`:''}
+  ${s.failed?.length?`<div class="note warn">These files didn’t upload: ${s.failed.map(esc).join(', ')}. Email them to us with your reference.</div>`:''}
+  ${S.tier==='dfy'&&s.payUrl?`<section class="docsec paybox"><h3>Last step: how should we charge our fee?</h3><p>Choose card or bank direct debit (SEPA). <b>Nothing is charged now.</b> We charge ${Math.round(CONFIG.commission*100)}% (min ${eur(CONFIG.minFee)}) plus IVA only when each grant’s money reaches your account, and email you an invoice.</p><a class="primary paybtn" href="${esc(s.payUrl)}">Choose payment method</a><p class="hint" style="margin-top:.6rem">Secure page run by Stripe. You can also do this later from the link in our email.</p></section>`:''}
+  <div class="note">${S.tier==='dfy'?'We’ll email you the service agreement within one working day, with a list of anything still missing.':'We’ll email you before the deadlines of the grants you saved.'}</div>
+  <div class="actions"><button class="ghost" data-act="restart">Check another business</button></div>`;
+}
+
+function vSpecial(){
+  const sp=S.special;
+  if (sp.kind==='done') return `<h2>Payment method saved</h2><p class="ref">${esc(sp.ref||'')}</p><div class="note">Thank you. Nothing has been charged. We charge ${Math.round(CONFIG.commission*100)}% (min ${eur(CONFIG.minFee)}) plus IVA only when each grant’s money reaches your account, and email you the invoice.</div><div class="actions"><a class="ghost" href="/">Back to Solicita</a></div>`;
+  return `<h2>Authorise your payment method</h2>
+  ${sp.kind==='cancel'?'<div class="note warn">You left the payment page before finishing. No problem: you can do it now.</div>':''}
+  <p class="lede">Card or bank direct debit (SEPA). Nothing is charged now: we only charge our fee when your grant money arrives.</p>
+  <div class="field"><label class="q" for="pref">Your reference</label><input type="text" id="pref" value="${esc(sp.ref||'')}" placeholder="SOL-XXXX" style="max-width:14rem;text-transform:uppercase"></div>
+  <div class="field"><label class="q" for="pemail">The email you used</label><input type="email" id="pemail"></div>
+  <p class="msg err" id="paymsg">${esc(sp.err||'')}</p>
+  <div class="actions"><button class="primary" data-act="paylink" ${sp.busy?'disabled':''}>${sp.busy?'Opening…':'Continue to secure payment page'}</button></div>`;
+}
+async function doPayLink(){
+  const ref=document.getElementById('pref').value.trim(), email=document.getElementById('pemail').value.trim();
+  if(!ref||!email){ S.special.err='Enter your reference and email.'; return render(); }
+  S.special={...S.special, ref, busy:true, err:''}; render();
+  try{
+    const {data,error}=await sb.functions.invoke('payment-setup',{body:{ref,email}});
+    if(error){ let m='Something went wrong.'; try{ m=(await error.context.json()).error||m; }catch(_){} throw new Error(m); }
+    if(data.url){ location.href=data.url; return; }
+    S.special={kind:data.status==='already_done'?'done':'form', ref, err:data.status==='already_done'?'':'Online payment setup isn’t available yet. We’ll email you a link.'}; render();
+  }catch(e){ S.special={...S.special, busy:false, err:e.message}; render(); }
+}
+
+/* ---------- Actions ---------- */
+function render(){ app.innerHTML = S.special ? vSpecial() : [null,vStart,vDetails,vQuestions,vResults,vApply][S.step](); S.animate=false; }
+function rerenderKeepScroll(){ const y=window.scrollY; render(); window.scrollTo(0,y); }
+function go(n){ if(n===4&&S.step===3) S.animate=true; S.step=n; S.err=''; render(); window.scrollTo({top:0}); }
+const guessType = f => f.type || ({pdf:'application/pdf',jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',webp:'image/webp',rtf:'application/rtf',doc:'application/msword',docx:'application/vnd.openxmlformats-officedocument.wordprocessingml.document'}[(f.name.split('.').pop()||'').toLowerCase()] || '');
+
+async function doLookup(){
+  const raw=document.getElementById('nif').value, v=checkNif(raw);
+  if(!v.ok){ S.err=v.msg; S.nif=raw; return render(); }
+  S.nif=v.v; S.busy=true; S.err=''; render();
+  let L;
+  try { const {data,error}=await sb.functions.invoke('company-lookup',{body:{nif:v.v}}); if(error) throw error; L=data; }
+  catch(e){ L={valid:true,nif:v.v,lookup:'error',entity:/^[XYZ\d]/.test(v.v)?'autonomo':(v.v[0]==='B'?'sl':'other'),label:''}; }
+  S.busy=false;
+  if (L.valid===false){ S.err=L.message; return render(); }
+  S.lookup=L; S.demo=false; S.p=blank(); S.auto={}; S.company=null; S.selected.clear();
+  S.p.entity=L.entity; S.auto.entity=L.type==='cif';
+  if (L.lookup==='found' && L.company){
+    const c=L.company; S.company=c;
+    if (c.name){ S.p.name=c.name; S.auto.name=true; }
+    if (c.provinceKey){ S.p.province=c.provinceKey; S.auto.province=true; }
+    if (c.hospitality){ S.p.sector='hospitality'; S.auto.sector=true; }
+    const m=String(c.founded||'').match(/(\d{4})-(\d{2})/)||String(c.founded||'').match(/\d{2}\/(\d{2})\/(\d{4})/);
+    if (m){ const [y,mo]=m[1].length===4?[m[1],m[2]]:[m[2],m[1]]; S.p.startY=String(+y); S.p.startM=String(+mo); S.auto.start=true; }
+  }
+  go(2);
+}
+async function doSend(){
+  if(!ready()||S.busy) return;
+  S.busy=true; S.err=''; render();
+  const sel=selectedResults(), files=[], fileMap={};
+  if (S.tier==='dfy') for (const [doc,list] of Object.entries(S.docFiles)) list.forEach((f,i)=>{ const key=`${doc}:${i}`; fileMap[key]=f; files.push({key, doc, name:f.name, size:f.size, type:guessType(f)}); });
+  const body={ tier:S.tier, nif:S.nif||null, company:S.company||{}, profile:{...S.p, prepareForMe:Object.keys(S.prepare).filter(k=>S.prepare[k])}, contact:S.contact,
+    consents:{data:S.agree.data, fee:S.tier==='dfy'&&S.agree.fee},
+    grants:sel.map(x=>({id:x.g.id, amount:x.r.max||null, fee:S.tier==='dfy'?feeFor(x):null})), files };
+  try{
+    const {data,error}=await sb.functions.invoke('create-case',{body});
+    if(error){ let m='Something went wrong. Please try again.'; try{ m=(await error.context.json()).error||m; }catch(_){} throw new Error(m); }
+    const failed=[]; let uploaded=0;
+    for (const u of data.uploads||[]){
+      const f=fileMap[u.key]; if(!f) continue;
+      const {error:upErr}=await sb.storage.from('case-documents').uploadToSignedUrl(u.path,u.token,f,{contentType:guessType(f)});
+      if(upErr) failed.push(f.name); else uploaded++;
+    }
+    const expected=files.length; if (uploaded+failed.length<expected) for (const f of files) if (!(data.uploads||[]).some(u=>u.key===f.key)) failed.push(f.name);
+    S.sent={ref:data.ref, failed, uploaded};
+    if (S.tier==='dfy'){ try{ const r=await sb.functions.invoke('payment-setup',{body:{ref:data.ref,email:S.contact.email}}); if(!r.error){ S.sent.payUrl=r.data.url||null; S.sent.payStatus=r.data.status; } }catch(_){} }
+    S.busy=false; render(); window.scrollTo({top:0});
+  }catch(e){ S.busy=false; S.err=e.message; render(); }
+}
+
+app.addEventListener('click', e=>{
+  const t=e.target.closest('button'); if(!t) return;
+  if (t.dataset.go) return go(Number(t.dataset.go));
+  if (t.dataset.filter){ S.filter=t.dataset.filter; return rerenderKeepScroll(); }
+  if (t.dataset.tier){ S.tier=t.dataset.tier; S.err=''; return rerenderKeepScroll(); }
+  if (t.dataset.tpl) return downloadTemplate(t.dataset.tpl);
+  if (t.dataset.rm){ const [d,i]=t.dataset.rm.split(':'); S.docFiles[d].splice(+i,1); if(!S.docFiles[d].length) delete S.docFiles[d]; return rerenderKeepScroll(); }
+  const a=t.dataset.act;
+  if (a==='nif') doLookup();
+  if (a==='demo'){ S.demo=true; S.lookup=null; S.company=null; S.nif=''; S.auto={}; S.selected.clear();
+    S.p={...blank(), name:'Easy Beans Coffee', entity:'sl', province:'malaga', town:'large', sector:'hospitality', employees:'3', startY:'2026', startM:'4', turnover:'no'}; go(2); }
+  if (a==='toQuestions'){ if(!S.p.entity||!S.p.province){ document.getElementById('detmsg').textContent='Choose a business type and where it’s based to continue.'; return; } go(3); }
+  if (a==='send') doSend();
+  if (a==='paylink') doPayLink();
+  if (a==='restart'){ Object.assign(S,{step:1,nif:'',lookup:null,company:null,auto:{},demo:false,p:blank(),selected:new Set(),filter:'all',tier:null,contact:{name:'',email:'',phone:''},agree:{data:false,fee:false},docFiles:{},prepare:{},have:{},sent:null,err:''}); render(); }
+});
+app.addEventListener('keydown', e=>{ if(e.key==='Enter'&&e.target.id==='nif'){ e.preventDefault(); doLookup(); } });
+app.addEventListener('input', e=>{
+  const t=e.target;
+  if (t.dataset.k && (t.type==='text'||t.type==='number')) S.p[t.dataset.k]=t.value;
+  if (t.dataset.c){ S.contact[t.dataset.c]=t.value; const b=app.querySelector('[data-act="send"]'); if(b) b.disabled=!ready(); }
+});
+app.addEventListener('change', e=>{
+  const t=e.target;
+  if (t.dataset.pick){ t.checked?S.selected.add(t.dataset.pick):S.selected.delete(t.dataset.pick); const b=app.querySelector('[data-go="5"]'); if(b){ const n=S.selected.size; b.disabled=!n; b.textContent=`Apply for ${n||'selected'} grant${n===1?'':'s'}`; } return; }
+  if (t.dataset.agree){ S.agree[t.dataset.agree]=t.checked; const b=app.querySelector('[data-act="send"]'); if(b) b.disabled=!ready(); return; }
+  if (t.dataset.doc){
+    const ok=[], bad=[];
+    for (const f of t.files){ if (f.size>10*1024*1024 || !guessType(f)) bad.push(f.name); else ok.push(f); }
+    if (ok.length) S.docFiles[t.dataset.doc]=[...(S.docFiles[t.dataset.doc]||[]), ...ok];
+    rerenderKeepScroll(); if (bad.length) alert(`Not added (must be PDF, photo, Word or RTF, under 10 MB): ${bad.join(', ')}`); return;
+  }
+  if (t.dataset.prep){ S.prepare[t.dataset.prep]=t.checked; return rerenderKeepScroll(); }
+  if (t.dataset.have){ S.have[t.dataset.have]=t.checked; return rerenderKeepScroll(); }
+  if (t.dataset.k==='age') return rerenderKeepScroll();
+  if (t.dataset.k && (t.type==='radio'||t.tagName==='SELECT')){
+    S.p[t.dataset.k]=t.value; if (t.type==='radio') S.auto[t.dataset.k]=false;
+    if (t.dataset.k==='alta' && t.value==='notyet') S.p.tarifaPlana='unsure';
+    rerenderKeepScroll();
+    const again=app.querySelector(`[data-k="${t.dataset.k}"]${t.type==='radio'?`[value="${t.value}"]`:''}`); if(again) again.focus({preventScroll:true});
+  }
+});
+
+/* ---------- Boot ---------- */
+(async()=>{
+  const [g,d,gd] = await Promise.all([
+    sb.from('grants').select('*').order('sort_order'),
+    sb.from('document_types').select('*').order('sort_order'),
+    sb.from('grant_documents').select('*')
+  ]);
+  if (g.error||!g.data){ app.innerHTML='<p class="msg err">Couldn’t load the grants list. Please refresh the page.</p>'; return; }
+  GRANTS=g.data; (d.data||[]).forEach(x=>DOCS[x.id]=x); GDOCS=gd.data||[];
+  const q=new URLSearchParams(location.search);
+  if (q.get('setup')==='done') S.special={kind:'done', ref:q.get('ref')};
+  else if (q.get('setup')==='cancel') S.special={kind:'cancel', ref:q.get('ref')};
+  else if (q.get('pay')) S.special={kind:'form', ref:q.get('pay')};
+  if (S.special) history.replaceState(null,'',location.pathname);
+  render();
+})();
+</script>
+</body>
+</html>

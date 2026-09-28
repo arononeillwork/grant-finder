@@ -1,0 +1,6 @@
+# Supabase CLI config (minimal). Run `supabase link --project-ref <ref>` before deploying.
+project_id = "solicita"
+
+# Stripe calls this without a Supabase JWT; the function verifies Stripe's signature itself.
+[functions.stripe-webhook]
+verify_jwt = false
