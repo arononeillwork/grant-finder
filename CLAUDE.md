@@ -186,8 +186,8 @@ See `docs/grants-audit.md`. Summary:
 ## 12. Open work (priority order)
 
 1. ~~Deploy to the new Supabase project + Vercel from this repo~~ Done 28 Sep 2026 (see §15). Still needed: the Edge Function secrets.
-2. **Verify email delivery from Edge Functions.** SMTP on port 465 from Supabase Edge is **untested**. If blocked, switch `sendMail` to an HTTP email API (e.g. Resend) behind the same interface.
-3. **Verify APIEmpresas response field names** with a real key and adjust `normalise()` in `company-lookup`.
+2. **Verify email delivery from Edge Functions.** SMTP on port 465 from Supabase Edge works: on 28 Sep, `nodemailer` reached Gmail's AUTH step. The first send failed with `534 Application-specific password required`, so `GMAIL_APP_PASSWORD` must be a Google app password, not the account password.
+3. **Verify APIEmpresas response field names** with a real key and adjust `normalise()` in `company-lookup`. The API takes the key in an `X-API-KEY` header (confirmed 28 Sep from its 401 response and fixed in code). The saved key was rejected as `API_KEY_INVALID`, so field names are still unverified.
 4. **Verify the BDNS API query** in `email-jobs` (`bdnsNew`); the parameter names are unconfirmed and it currently degrades gracefully.
 5. Add the Easy Beans CIF to `site/config.js` (`operatorNif`); it's used in the representation template and should appear on invoices.
 6. Update `RULES.diputacion_6000` for the 2022–2026 RETA-date condition; re-verify hidden grants against official sources.

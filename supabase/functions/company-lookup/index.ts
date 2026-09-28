@@ -55,7 +55,7 @@ Deno.serve(async (req) => {
 
   try {
     const r = await fetch(`https://apiempresas.es/api/v1/companies?cif=${encodeURIComponent(v.v)}`, {
-      headers: { Authorization: `Bearer ${key}`, Accept: "application/json" },
+      headers: { "X-API-KEY": key, Accept: "application/json" },
     });
     if (r.status === 404) return json({ ...base, lookup: "not_found" });
     if (!r.ok) { console.error("apiempresas", r.status, await r.text()); return json({ ...base, lookup: "error" }); }
